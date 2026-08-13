@@ -1,15 +1,27 @@
 from ldap3 import Connection, Server, Tls, MODIFY_ADD, MODIFY_DELETE
-import os
+import os, hvac
 import ssl
 
-def getenv(name: str) -> str:
-    """Return the value of an environment variable or an empty string if it is missing."""
-    value = os.getenv(name)
-    if value is None:
-        print(f"Warning: environment variable '{name}' is not set.")
-        return ""
-    return value
+def getCreds() -> (str, str):
 
+    token = os.getenv("rootToken")
+    if token is None:
+        print("Warning: environment variable 'rootToken' is not set.")
+
+    client = hvac.Client(
+        url="http://127.0.0.1:8200",
+        token=token
+    )
+
+    if not client.is_authenticated():
+        raise Exception("Vault authentication failed")
+
+    secret = client.secrets.kv.v2.read_secret_version(
+        path="challenge/creds",
+        mount_point="secret",
+        raise_on_deleted_version=True
+    )
+    return secret["data"]["data"]["username"], secret["data"]["data"]["password"]
 
 def make_server(hostname: str, port: int = 636, timeout: int = 10) -> Server:
     """Create an LDAP server object configured for SSL/TLS."""
@@ -126,11 +138,10 @@ def remove_members_from_group(connection: Connection, target_dn: str, members: l
 
 def main() -> None:
     """Main execution flow for LDAP group member retrieval and management."""
-    svc_ac = getenv("svc_ac")
-    svc_pw = getenv("svc_pw")
+    svc_ac, svc_pw= getCreds()
 
     if not svc_ac or not svc_pw:
-        print("Error: Missing LDAP service account credentials. Set svc_ac and svc_pw as environment variables.")
+        print("Error: Missing LDAP service account credentials.")
         return
 
     server = make_server("dir-tst.slb-tst.com")
