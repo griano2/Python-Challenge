@@ -2,7 +2,7 @@ from ldap3 import Connection, Server, Tls, MODIFY_ADD, MODIFY_DELETE
 import os, hvac
 import ssl
 
-def getCreds() -> (str, str):
+def getCreds() -> tuple[str, str]:
 
     token = os.getenv("rootToken")
     if token is None:
@@ -57,36 +57,19 @@ def search(connection: Connection, search_base: str, search_filter: str, attribu
         size_limit=size_limit,
     )
 
-    print("Search successful:", successful)
     return connection.entries
 
 
-def print_members(entries, group_name: str) -> list:
-    """Print the members of a group from LDAP search entries."""
-    if not entries:
-        print(f"No entries found for group '{group_name}'.")
-        return []
-
-    entry = entries[0]
-    members = entry["member"].values
+def print_members(members, group_name: str) -> None:
     if not members:
         print(f"Group '{group_name}' does not contain any members.")
-        return []
-    
+        return
+
     print(f"Members of {group_name}:")
     for dn in members:
         print(" -", dn)
-    return members
 
-
-def get_dn(entries, group_name: str) -> str:
-    """Extract the distinguished name (DN) of a group from LDAP search entries."""
-    if not entries:
-        raise ValueError(f"No entries found for group '{group_name}'")
-    return entries[0].entry_dn
-
-
-def get_group_members(connection: Connection, search_base: str, group_name: str, filter_attribute: str, attributes: list[str] | tuple[str, ...] = ("member",), size_limit: int = 0) -> list:
+def get_group_members(connection: Connection, search_base: str, group_name: str, filter_attribute: str, attributes: list[str] | tuple[str, ...] = ("member",), size_limit: int = 0) -> set:
     """Search a group and return its member list."""
     filter_value = f"({filter_attribute}={group_name})"
     entries = search(
@@ -99,10 +82,11 @@ def get_group_members(connection: Connection, search_base: str, group_name: str,
 
     if not entries:
         print(f"No entries found for group '{group_name}'.")
-        return []
+        return set()
 
-    return print_members(entries, group_name)
-
+    entry = entries[0]
+    members = entry["member"].values
+    return set(members)
 
 def add_members_to_group(connection: Connection, target_dn: str, members: list) -> None:
     """Add each member to the target group."""
@@ -135,7 +119,6 @@ def remove_members_from_group(connection: Connection, target_dn: str, members: l
         else:
             print(f"Error removing {member}: {connection.result}")
 
-
 def main() -> None:
     """Main execution flow for LDAP group member retrieval and management."""
     svc_ac, svc_pw= getCreds()
@@ -158,25 +141,33 @@ def main() -> None:
         print("\n=== LDAP Menu ===")
         print("1) Read users from the source group")
         print("2) Read users from the target group")
-        print("3) Add users from the source group to the target group")
-        print("4) Delete users from the target group")
-        print("5) Exit")
+        print("3) Add users from group1 to group2")
+        print("4) Delete users from the group2 that are not in group1")
+        print("5) Delete users all from group2")
+        print("6) Sync both groups") 
+        print("7) Exit")
 
         option = input("Select an option: ").strip()
 
         if option == "1":
             print(f"\nSource group: {source_group}")
-            get_group_members(connection, search_base, source_group, "name")
+            members = get_group_members(connection, search_base, source_group, "name")
+            print_members(members, source_group)
 
         elif option == "2":
             print(f"\nTarget group: {target_group}")
-            get_group_members(connection, search_base, target_group, "name")
+            members = get_group_members(connection, search_base, target_group, "name")
+            print_members(members, target_group)
 
         elif option == "3":
-            source_members = get_group_members(connection, search_base, source_group, "name")
-            if not source_members:
+            sourcegrp_members = get_group_members(connection, search_base, source_group, "name")
+            if not sourcegrp_members:
                 print(f"No members to add from '{source_group}'.")
                 continue
+            
+            targetgrp_members = get_group_members(connection, search_base, target_group, "name")
+            members_to_add = list(sourcegrp_members - targetgrp_members)
+            print(f"Need to add: {len(members_to_add)}")
 
             target_entries = search(
                 connection,
@@ -188,11 +179,35 @@ def main() -> None:
             if not target_entries:
                 print(f"Error: target group '{target_group}' not found.")
                 continue
-
-            target_dn = get_dn(target_entries, target_group)
-            add_members_to_group(connection, target_dn, source_members)
+            
+            target_dn = target_entries[0].entry_dn
+            add_members_to_group(connection, target_dn, members_to_add)  
 
         elif option == "4":
+            sourcegrp_members = get_group_members(connection, search_base, source_group, "name")
+            if not sourcegrp_members:
+                print(f"No members to add from '{source_group}'.")
+                continue
+            
+            targetgrp_members = get_group_members(connection, search_base, target_group, "name")
+            members_to_remove = list(targetgrp_members - sourcegrp_members)
+            print(f"Need to delete: {len(members_to_remove)}")
+
+            target_entries = search(
+                connection,
+                search_base=search_base,
+                search_filter=f"(cn={target_group})",
+                attributes=["distinguishedName"],
+                size_limit=1,
+            )
+            if not target_entries:
+                print(f"Error: target group '{target_group}' not found.")
+                continue
+            
+            target_dn = target_entries[0].entry_dn
+            remove_members_from_group(connection, target_dn, members_to_remove)  
+
+        elif option == "5":
             target_entries = search(
                 connection,
                 search_base=search_base,
@@ -204,23 +219,42 @@ def main() -> None:
                 print(f"Error: target group '{target_group}' not found.")
                 continue
 
-            target_dn = get_dn(target_entries, target_group)
-
-            target_members = search(
-                connection,
-                search_base=search_base,
-                search_filter=f"(cn={target_group})",
-                attributes=["member"],
-                size_limit=1,
-            )
-            members_to_remove = print_members(target_members, target_group)
+            target_dn = target_entries[0].entry_dn
+            members_to_remove = get_group_members(connection, search_base, target_group, "name")
             if not members_to_remove:
                 print(f"The target group '{target_group}' has no users to delete.")
                 continue
 
             remove_members_from_group(connection, target_dn, members_to_remove)
 
-        elif option == "5":
+        elif option == "6":
+            sourcegrp_members = get_group_members(connection, search_base, source_group, "name")
+            if not sourcegrp_members:
+                print(f"No members to add from '{source_group}'.")
+                continue
+                    
+            targetgrp_members = get_group_members(connection, search_base, target_group, "name")
+            members_to_add = list(sourcegrp_members - targetgrp_members)
+            print(f"Need to add: {len(members_to_add)}")
+            members_to_remove = list(targetgrp_members - sourcegrp_members)
+            print(f"Need to delete: {len(members_to_remove)}")
+        
+            target_entries = search(
+                connection,
+                search_base=search_base,
+                search_filter=f"(cn={target_group})",
+                attributes=["distinguishedName"],
+                size_limit=1,
+            )
+            if not target_entries:
+                print(f"Error: target group '{target_group}' not found.")
+                continue
+                    
+            target_dn = target_entries[0].entry_dn
+            add_members_to_group(connection, target_dn, members_to_add)
+            remove_members_from_group(connection, target_dn, members_to_remove)  
+
+        elif option == "7":
             print("Exiting the program.")
             break
 
