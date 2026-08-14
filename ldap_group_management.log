@@ -1,14 +1,45 @@
-2026-08-13 22:15:44,481 | INFO | Credentials successfully retrieved from Vault
-2026-08-13 22:15:48,092 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
-2026-08-13 22:16:14,758 | INFO | Full group cleanup started | count=2
-2026-08-13 22:16:14,981 | INFO | AUDIT | action=REMOVE | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
-2026-08-13 22:16:15,205 | INFO | AUDIT | action=REMOVE | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
-2026-08-13 22:16:34,624 | INFO | Bulk add started | count=2
-2026-08-13 22:16:35,063 | INFO | AUDIT | action=ADD | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
-2026-08-13 22:16:35,287 | INFO | AUDIT | action=ADD | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
-2026-08-13 22:17:22,145 | INFO | Manual add requested | email=ADM-JPena49@slb-tst.com | group=Python-Test-Group-2
-2026-08-13 22:17:22,376 | INFO | User lookup successful | email=ADM-JPena49@slb-tst.com | dn=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
-2026-08-13 22:17:22,830 | INFO | AUDIT | action=ADD | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
-2026-08-13 22:17:38,705 | INFO | Group synchronization started | source=Python-Test-Group-1 | target=Python-Test-Group-2
-2026-08-13 22:17:39,591 | INFO | AUDIT | action=REMOVE | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
-2026-08-13 22:17:39,592 | INFO | Group synchronization completed | added=0 | removed=1
+2026-08-14 07:42:43,260 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 07:42:59,492 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:15:26,604 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:15:39,706 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:15:46,319 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:15:57,205 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:23:03,833 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:23:14,357 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:23:29,229 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:23:39,102 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:23:39,320 | INFO | User lookup successful | email=ADM-JPena49@slb-tst.com | dn=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 08:23:39,819 | INFO | AUDIT | action=ADD | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 08:23:41,963 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:23:53,637 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:23:53,971 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:23:58,172 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:24:15,162 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:24:16,875 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:24:20,229 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:24:33,317 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:24:34,500 | INFO | AUDIT | action=ADD | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 08:24:36,676 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:24:47,055 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:24:47,334 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:24:57,765 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:27:01,357 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:27:16,321 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:27:57,237 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:28:17,716 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:28:21,647 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:28:35,969 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:28:47,034 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:29:35,190 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 08:30:03,163 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 08:30:21,036 | INFO | User lookup successful | email=ADM-JPena49@slb-tst.com | dn=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 08:30:21,655 | INFO | AUDIT | action=REMOVE | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 08:30:25,837 | INFO | AUDIT | action=REMOVE | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 08:39:16,381 | INFO | User lookup successful | email=ADM-JPena49@slb-tst.com | dn=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 08:39:16,989 | INFO | AUDIT | action=ADD | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 08:39:21,618 | INFO | AUDIT | action=REMOVE | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 09:01:09,162 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 09:01:23,037 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 09:01:43,141 | INFO | User lookup successful | email=Adm-jcastano5@slb-tst.com | dn=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 09:01:43,573 | INFO | AUDIT | action=REMOVE | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 09:02:41,924 | INFO | AUDIT | action=ADD | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
