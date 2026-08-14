@@ -52,10 +52,6 @@ class LDAPService:
                 server.host)
             raise
 
-    def close(self):
-        if self.connection:
-            self.connection.unbind()
-
     def search(self, search_filter, attributes, size_limit=0):
         self.connection.search(
             search_base=self.search_base,
@@ -77,7 +73,6 @@ class LDAPService:
 
         if not entries:
             logger.warning("No entries found for group '%s'", group_name)
-            print(f"No entries found for group '{group_name}'.")
             return set()
 
         entry = entries[0]
@@ -196,11 +191,11 @@ class LDAPService:
 
         user = entries[0]
 
-        print("\nFound user:")
-        print(" DN:", user.entry_dn)
-        print(" Alias:", getattr(user, "sAMAccountName", ""))
-        print(" Mail:", getattr(user, "mail", ""))
-        print(" UPN:", getattr(user, "userPrincipalName", ""))
+        # print("\nFound user:")
+        # print(" DN:", user.entry_dn)
+        # print(" Alias:", getattr(user, "sAMAccountName", ""))
+        # print(" Mail:", getattr(user, "mail", ""))
+        # print(" UPN:", getattr(user, "userPrincipalName", ""))
 
         logger.info(
             "User lookup successful | email=%s | dn=%s",

@@ -43,3 +43,104 @@
 2026-08-14 09:01:43,141 | INFO | User lookup successful | email=Adm-jcastano5@slb-tst.com | dn=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
 2026-08-14 09:01:43,573 | INFO | AUDIT | action=REMOVE | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
 2026-08-14 09:02:41,924 | INFO | AUDIT | action=ADD | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:18:09,916 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 13:18:21,229 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 13:19:16,245 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 13:19:20,801 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 13:23:50,632 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 13:24:03,124 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 13:24:12,507 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 13:24:21,611 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 13:24:22,475 | INFO | AUDIT | action=REMOVE | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:24:22,720 | INFO | AUDIT | action=REMOVE | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:26:04,849 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 13:26:16,133 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 13:26:35,655 | INFO | AUDIT | action=REMOVE | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:26:35,875 | INFO | AUDIT | action=REMOVE | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:26:35,876 | INFO | AUDIT | action=SYNC | user=Python-Test-Group-1 | group=Python-Test-Group-2 | success=True | details=
+2026-08-14 13:26:48,518 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 13:26:52,506 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 13:26:52,947 | INFO | User lookup successful | email=ADM-JPena49@slb-tst.com | dn=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 13:26:53,169 | INFO | User lookup successful | email=Adm-griano2@slb-tst.com | dn=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 13:26:53,394 | INFO | User lookup successful | email=Adm-jcastano5@slb-tst.com | dn=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 13:26:53,711 | INFO | User lookup successful | email=NEfendi@slb-tst.com | dn=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 13:26:53,940 | INFO | User lookup successful | email=MBXHoustonAP@slb-tst.com | dn=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 13:26:54,160 | INFO | AUDIT | action=ADD | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:26:54,478 | INFO | AUDIT | action=ADD | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:26:54,785 | INFO | AUDIT | action=ADD | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:26:55,094 | INFO | AUDIT | action=ADD | user=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:26:55,382 | INFO | AUDIT | action=ADD | user=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:28:56,131 | INFO | AUDIT | action=ADD | user=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:28:56,395 | INFO | AUDIT | action=ADD | user=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:28:56,619 | INFO | AUDIT | action=ADD | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:28:56,949 | INFO | AUDIT | action=ADD | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:28:57,261 | INFO | AUDIT | action=ADD | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-08-14 13:28:57,262 | INFO | AUDIT | action=SYNC | user=Python-Test-Group-1 | group=Python-Test-Group-2 | success=True | details=
+2026-08-14 13:30:30,751 | INFO | Credentials successfully retrieved from Vault
+2026-08-14 13:30:35,642 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-14 13:30:36,087 | INFO | User lookup successful | email=ADM-JPena49@slb-tst.com | dn=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 13:30:36,306 | INFO | User lookup successful | email=Adm-griano2@slb-tst.com | dn=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 13:30:36,529 | INFO | User lookup successful | email=Adm-jcastano5@slb-tst.com | dn=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 13:30:36,753 | INFO | User lookup successful | email=NEfendi@slb-tst.com | dn=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 13:30:36,987 | INFO | User lookup successful | email=MBXHoustonAP@slb-tst.com | dn=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-14 13:30:37,206 | ERROR | Failed to add user to group | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | result={'result': 68, 'description': 'entryAlreadyExists', 'dn': '', 'message': '00000562: UpdErr: DSID-031A11F8, problem 6005 (ENTRY_EXISTS), data 0\n\x00', 'referrals': None, 'type': 'modifyResponse'}
+2026-08-14 13:30:37,206 | INFO | AUDIT | action=ADD | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=False | details={'result': 68, 'description': 'entryAlreadyExists', 'dn': '', 'message': '00000562: UpdErr: DSID-031A11F8, problem 6005 (ENTRY_EXISTS), data 0\n\x00', 'referrals': None, 'type': 'modifyResponse'}
+2026-08-14 13:30:37,426 | ERROR | Failed to add user to group | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | result={'result': 68, 'description': 'entryAlreadyExists', 'dn': '', 'message': '00000562: UpdErr: DSID-031A11F8, problem 6005 (ENTRY_EXISTS), data 0\n\x00', 'referrals': None, 'type': 'modifyResponse'}
+2026-08-14 13:30:37,426 | INFO | AUDIT | action=ADD | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=False | details={'result': 68, 'description': 'entryAlreadyExists', 'dn': '', 'message': '00000562: UpdErr: DSID-031A11F8, problem 6005 (ENTRY_EXISTS), data 0\n\x00', 'referrals': None, 'type': 'modifyResponse'}
+2026-08-14 13:30:37,653 | ERROR | Failed to add user to group | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | result={'result': 68, 'description': 'entryAlreadyExists', 'dn': '', 'message': '00000562: UpdErr: DSID-031A11F8, problem 6005 (ENTRY_EXISTS), data 0\n\x00', 'referrals': None, 'type': 'modifyResponse'}
+2026-08-14 13:30:37,654 | INFO | AUDIT | action=ADD | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=False | details={'result': 68, 'description': 'entryAlreadyExists', 'dn': '', 'message': '00000562: UpdErr: DSID-031A11F8, problem 6005 (ENTRY_EXISTS), data 0\n\x00', 'referrals': None, 'type': 'modifyResponse'}
+2026-08-14 13:30:37,876 | ERROR | Failed to add user to group | user=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | result={'result': 68, 'description': 'entryAlreadyExists', 'dn': '', 'message': '00000562: UpdErr: DSID-031A11F8, problem 6005 (ENTRY_EXISTS), data 0\n\x00', 'referrals': None, 'type': 'modifyResponse'}
+2026-08-14 13:30:37,876 | INFO | AUDIT | action=ADD | user=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=False | details={'result': 68, 'description': 'entryAlreadyExists', 'dn': '', 'message': '00000562: UpdErr: DSID-031A11F8, problem 6005 (ENTRY_EXISTS), data 0\n\x00', 'referrals': None, 'type': 'modifyResponse'}
+2026-08-14 13:30:38,096 | ERROR | Failed to add user to group | user=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | result={'result': 68, 'description': 'entryAlreadyExists', 'dn': '', 'message': '00000562: UpdErr: DSID-031A11F8, problem 6005 (ENTRY_EXISTS), data 0\n\x00', 'referrals': None, 'type': 'modifyResponse'}
+2026-08-14 13:30:38,096 | INFO | AUDIT | action=ADD | user=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-1,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=False | details={'result': 68, 'description': 'entryAlreadyExists', 'dn': '', 'message': '00000562: UpdErr: DSID-031A11F8, problem 6005 (ENTRY_EXISTS), data 0\n\x00', 'referrals': None, 'type': 'modifyResponse'}
+2026-08-14 13:31:53,047 | ERROR | Unhandled application error
+Traceback (most recent call last):
+  File "C:\Users\griano2\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\ldap3\strategy\base.py", line 881, in sending
+    self.connection.socket.sendall(encoded_message)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\griano2\AppData\Local\Python\pythoncore-3.14-64\Lib\ssl.py", line 1263, in sendall
+    v = self.send(byte_view[count:])
+  File "C:\Users\griano2\AppData\Local\Python\pythoncore-3.14-64\Lib\ssl.py", line 1232, in send
+    return self._sslobj.write(data)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+ConnectionResetError: [Errno 10054] An existing connection was forcibly closed by the remote host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\griano2\Documents\Python Challenge\main.py", line 90, in <module>
+    main()
+    ~~~~^^
+  File "c:\Users\griano2\Documents\Python Challenge\main.py", line 79, in main
+    print_group_members()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\griano2\Documents\Python Challenge\main.py", line 15, in print_group_members
+    get_group_members("Python-Test-Group-1")
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\griano2\Documents\Python Challenge\main.py", line 21, in get_group_members
+    members = ldap.get_group_members(group_name)
+  File "c:\Users\griano2\Documents\Python Challenge\services\ldap_service.py", line 68, in get_group_members
+    entries = self.search(
+        search_filter=filter_value,
+        attributes=list(attributes),
+        size_limit=size_limit,
+    )
+  File "c:\Users\griano2\Documents\Python Challenge\services\ldap_service.py", line 56, in search
+    self.connection.search(
+    ~~~~~~~~~~~~~~~~~~~~~~^
+        search_base=self.search_base,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        size_limit=size_limit,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\griano2\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\ldap3\core\connection.py", line 853, in search
+    response = self.post_send_search(self.send('searchRequest', request, controls))
+                                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\griano2\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\ldap3\strategy\base.py", line 331, in send
+    self.sending(ldap_message)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\griano2\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\ldap3\strategy\base.py", line 892, in sending
+    raise communication_exception_factory(LDAPSocketSendError, type(e)(str(e)))(self.connection.last_error)
+ldap3.core.exceptions.LDAPSocketSendError: socket sending error[Errno 10054] An existing connection was forcibly closed by the remote host
