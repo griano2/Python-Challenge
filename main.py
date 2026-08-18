@@ -4,19 +4,22 @@ from utils.logging_config import logger
 from utils.audit import audit_log
 import importlib
 
-
 ldap = LDAPService()
+entra = EntraIDService(client_id="14d82eec-204b-4c2f-b7e8-296a70dab67e")
 
 def print_group_members():
     print("Which group do you want to see?")
     print("1) Python-Test-Group-1 (On-Premise)")
     print("2) Python-Test-Group-2 (On-Premise)")
+    print("4) Python-Test-Group-4 (On-Premise)")
     option = input("Select a group: ").strip()
 
     if option == "1":
         get_group_members("Python-Test-Group-1")
     elif option == "2":
         get_group_members("Python-Test-Group-2")
+    elif option == "4":
+        get_group_members("Python-Test-Group-4")
     
 
 def get_group_members(group_name: str):
@@ -58,7 +61,6 @@ def sync_ad_groups(source_group: str, target_group: str):
 
 def sync_entraid_to_ad(source_group: str, target_group: str):
 
-    entra = EntraIDService(client_id="YOUR_CLIENT_ID_HERE")
     cloud_upns = entra.get_group_members(source_group)
 
     source_dns = set()
@@ -112,12 +114,7 @@ def main() -> None:
             sync_ad_groups("Python-Test-Group-1", "Python-Test-Group-2")
 
         elif option == "4":
-            sync_entraid_to_ad(
-                "Python-Test-Group-3",
-                "Python-Test-Group-4",
-                os.getenv("entraTenantId"),
-                os.getenv("entraClientId"),
-                os.getenv("entraClientSecret"))
+            sync_entraid_to_ad("Python-Test-Group-3", "Python-Test-Group-4")
             
         elif option == "0":
             break
