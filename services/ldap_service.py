@@ -8,7 +8,7 @@ class LDAPService:
 
     def __init__(self):
         vault = VaultService()
-        username, password = vault.getCreds()
+        username, password = vault.get_ad_creds()
         server = self.make_server("dir-tst.slb-tst.com")
         self.connection = self.bind(server, username, password)
         self.search_base = "DC=dir-tst,DC=slb-tst,DC=com"

@@ -1,7 +1,9 @@
 from services.ldap_service import LDAPService
+from services.entraid_service import EntraIDService
 from utils.logging_config import logger
 from utils.audit import audit_log
 import importlib
+
 
 ldap = LDAPService()
 
@@ -36,7 +38,7 @@ def remove_user_from_group(group_name: str, email: str):
     group_dn = ldap.get_group_dn(group_name)
     ldap.remove_members_from_group(group_dn, [user_dn])
 
-def sync_groups(source_group: str, target_group: str):
+def sync_ad_groups(source_group: str, target_group: str):
 
     source_members = ldap.get_group_members(source_group)
     target_members = ldap.get_group_members(target_group)
@@ -49,7 +51,35 @@ def sync_groups(source_group: str, target_group: str):
     ldap.remove_members_from_group(target_dn, members_to_remove)
 
     audit_log(
-        action="SYNC",
+        action="SYNC_AD",
+        user_dn=source_group,
+        group_dn=target_group,
+        success=True)
+
+def sync_entraid_to_ad(source_group: str, target_group: str):
+
+    entra = EntraIDService(client_id="YOUR_CLIENT_ID_HERE")
+    cloud_upns = entra.get_group_members(source_group)
+
+    source_dns = set()
+    for upn in cloud_upns:
+        dn = ldap.find_user_by_email(upn)
+        if dn:
+            source_dns.add(dn)
+        else:
+            logger.warning("No on-prem match for %s", upn)
+
+    target_dns = ldap.get_group_members(target_group)
+
+    members_to_add = list(source_dns - target_dns)
+    members_to_remove = list(target_dns - source_dns)
+
+    target_dn = ldap.get_group_dn(target_group)
+    ldap.add_members_to_group(target_dn, members_to_add)
+    ldap.remove_members_from_group(target_dn, members_to_remove)
+
+    audit_log(
+        action="SYNC_ENTRAID",
         user_dn=source_group,
         group_dn=target_group,
         success=True)
@@ -79,8 +109,16 @@ def main() -> None:
             print_group_members()
 
         elif option == "3":
-            sync_groups("Python-Test-Group-1", "Python-Test-Group-2")
+            sync_ad_groups("Python-Test-Group-1", "Python-Test-Group-2")
 
+        elif option == "4":
+            sync_entraid_to_ad(
+                "Python-Test-Group-3",
+                "Python-Test-Group-4",
+                os.getenv("entraTenantId"),
+                os.getenv("entraClientId"),
+                os.getenv("entraClientSecret"))
+            
         elif option == "0":
             break
         
