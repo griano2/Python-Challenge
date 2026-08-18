@@ -2,7 +2,7 @@ import os, hvac
 from utils.logging_config import logger
 
 class VaultService:
-    def getCreds(self) -> tuple[str, str]:
+    def get_ad_creds(self) -> tuple[str, str]:
 
         token = os.getenv("rootToken")
 
