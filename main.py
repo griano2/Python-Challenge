@@ -90,36 +90,16 @@ def sync_lds_to_ad(source_alias: str, target_group: str):
     source_members = evq.get_group_members(source_alias)
     target_dns = ldap.get_group_members(target_group)
 
-    members_to_add = list(source_members - target_dns)
-    members_to_remove = list(target_dns - source_members)
-
-    target_dn = ldap.get_group_dn(target_group)
-    ldap.add_members_to_group(target_dn, members_to_add)
-    ldap.remove_members_from_group(target_dn, members_to_remove)
-
-    print(f"Source members : {len(source_members)}")
-    print(f"Target members : {len(target_dns)}")
-    print(f"To add         : {len(members_to_add)}")
-    print(f"To remove      : {len(members_to_remove)}")
-
-def sync_ad_to_lds(source_group: str, target_alias: str):
-    ad_members = ldap.get_group_members(source_group)
-    lds_members = evq.get_group_members(target_alias)
-
     source_users = {}
     target_users = {}
 
-    for ad_dn in ad_members:
-        lds_entry = evq.find_lds_user_by_ad_dn(ad_dn)
-        if not lds_entry:
-            continue
+    for ad_dn in source_members:
+        identity = evq.get_identity(ad_dn)
+        source_users[identity] = ad_dn
 
-        identity = get_identity(lds_entry.entry_dn)
-        source_users[identity] = lds_entry.entry_dn
-
-    for lds_dn in lds_members:
-        identity = get_identity(lds_dn)
-        target_users[identity] = lds_dn
+    for ad_dn in target_dns:
+        identity = evq.get_identity(ad_dn)
+        target_users[identity] = ad_dn
 
     source_ids = set(source_users.keys())
     target_ids = set(target_users.keys())
@@ -134,23 +114,68 @@ def sync_ad_to_lds(source_group: str, target_alias: str):
         for user in (target_ids - source_ids)
     ]
 
-    evq.add_members_to_group(target_alias, members_to_add)
+    target_dn = ldap.get_group_dn(target_group)
 
-    print("Members to remove:")
-    for dn in members_to_remove:
-        print(dn)
-    evq.remove_members_from_group(target_alias, members_to_remove)
+    ldap.add_members_to_group(
+        target_dn,
+        members_to_add
+    )
+
+    ldap.remove_members_from_group(
+        target_dn,
+        members_to_remove
+    )
 
     print(f"Source identities: {len(source_ids)}")
     print(f"Target identities: {len(target_ids)}")
     print(f"To add: {len(members_to_add)}")
-    print(f"To remove: {len(members_to_remove)}")    
+    print(f"To remove: {len(members_to_remove)}")
 
-def get_identity(dn: str) -> str:
-    match = re.search(r"CN=([^,]+)", dn, re.IGNORECASE)
-    if not match:
-        return ""
-    return match.group(1).strip().upper()
+def sync_ad_to_lds(source_group: str, target_alias: str):
+    ad_members = ldap.get_group_members(source_group)
+    source_users = {}
+    target_users = {}
+
+    for ad_dn in ad_members:
+        lds_entry = evq.find_lds_user_by_ad_dn(ad_dn)
+        if not lds_entry:
+            continue
+
+        identity = evq.get_identity(lds_entry.entry_dn)
+        source_users[identity] = lds_entry.entry_dn
+
+    target_users = evq.get_group_member_mapping(target_alias)
+    source_ids = set(source_users.keys())
+    target_ids = set(target_users.keys())
+
+    members_to_add = [
+        source_users[user]
+        for user in (source_ids - target_ids)
+    ]
+
+    members_to_remove = [
+        target_users[user]
+        for user in (target_ids - source_ids)
+    ]
+
+    evq.add_members_to_group(
+        target_alias,
+        members_to_add
+    )
+
+    print("Members to remove:")
+    for dn in members_to_remove:
+        print(dn)
+
+    evq.remove_members_from_group(
+        target_alias,
+        members_to_remove
+    )
+
+    print(f"Source identities: {len(source_ids)}")
+    print(f"Target identities: {len(target_ids)}")
+    print(f"To add: {len(members_to_add)}")
+    print(f"To remove: {len(members_to_remove)}")
 
 def main() -> None:
 

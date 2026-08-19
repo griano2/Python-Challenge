@@ -196,18 +196,6 @@ class EVQLDAPService:
 
         return set(group.uniqueMember.values)
 
-    def normalize_identity(self, dn: str) -> str:
-        match = re.search(
-            r"CN=([^,]+)",
-            dn,
-            re.IGNORECASE
-        )
-
-        if not match:
-            return ""
-
-        return match.group(1).strip().upper()
-
     def find_lds_user_by_ad_dn(self, ad_dn: str):
         match = re.search(r"CN=([^,]+)", ad_dn, re.IGNORECASE)
         if not match:
@@ -224,6 +212,37 @@ class EVQLDAPService:
         if not self.connection.entries:
             return None
         return self.connection.entries[0]
+
+    def get_identity(self, dn: str) -> str:
+        match = re.search(r"CN=([^,]+)", dn, re.IGNORECASE)
+        if not match:
+            return ""
+        return match.group(1).strip().upper()
+
+    def get_group_member_mapping(self, group_alias: str) -> dict[str, str]:
+        result = {}
+
+        for lds_dn in self.get_group_unique_members(group_alias):
+            self.connection.search(
+                search_base=lds_dn,
+                search_filter="(objectClass=*)",
+                attributes=["activedirectorydn"]
+            )
+
+            if not self.connection.entries:
+                continue
+
+            user = self.connection.entries[0]
+
+            if not hasattr(user, "activedirectorydn"):
+                continue
+
+            ad_dn = user.activedirectorydn.value
+            identity = self.get_identity(ad_dn)
+
+            result[identity] = lds_dn
+
+        return result
 
     def get_group_dn(self, group_alias: str) -> str | None:
         self.connection.search(
