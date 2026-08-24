@@ -1,10 +1,4 @@
-from services.envq_service import EVQLDAPService
-
-
-GROUP_DN = (
-    "CN=Other - testing-ldap-grpter  1000027856,"
-    "OU=mg,OU=group,O=slb,C=an"
-)
+from services.evq_service import EVQLDAPService
 
 MEMBERS = [
     "CN=Julieth Alvarez  2099886,OU=student,O=slb,C=an",
@@ -105,5 +99,6 @@ def run():
     evq = EVQLDAPService()
 
     print(f"Members to add: {len(MEMBERS)}")
-    evq.add_members_to_group(GROUP_DN,MEMBERS)
+    
+    evq.add_members_to_group("Other_Python-Test-Group-6",MEMBERS)
     print("Finished")

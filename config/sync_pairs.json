@@ -1,0 +1,47 @@
+[
+    {
+        "name": "Python Test Group Sync AD to AD",
+        "source_environment": "AD_DF2",
+        "source_group": "Python-Test-Group-1",
+        "target_environment": "AD_DF2",
+        "target_group": "Python-Test-Group-2",
+        "direction": "AD_TO_AD",
+        "enabled": false
+    },
+    {
+        "name": "Python Test Group Sync Entra to AD",
+        "source_environment": "ENTRA_DF2",
+        "source_group": "Python-Test-Group-3",
+        "target_environment": "AD_DF2",
+        "target_group": "Python-Test-Group-4",
+        "direction": "ENTRA_TO_AD",
+        "enabled": false
+    },
+    {
+        "name": "Python Test Group Sync AD to Entra",
+        "source_environment": "ENTRA_DF2",
+        "source_group": "Python-Test-Group-4",
+        "target_environment": "AD_DF2",
+        "target_group": "Python-Test-Group-3",
+        "direction": "AD_TO_ENTRA",
+        "enabled": false
+    },
+    {
+        "name": "Python Test Group Sync AD to LDS",
+        "source_environment": "AD_DF2",
+        "source_group": "Python-Test-Group-5",
+        "target_environment": "LDS_TEST",
+        "target_group": "Other_Python-Test-Group-6",
+        "direction": "AD_TO_LDS",
+        "enabled": false
+    },
+    {
+        "name": "Python Test Group Sync LDS to AD",
+        "source_environment": "LDS_TEST",
+        "source_group": "Other_Python-Test-Group-6",
+        "target_environment": "AD_DF2",
+        "target_group": "Python-Test-Group-5",
+        "direction": "LDS_TO_AD",
+        "enabled": false 
+    }
+]

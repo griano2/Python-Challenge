@@ -1,0 +1,25 @@
+[
+  {
+    "name": "LDS_TEST",
+    "env_type": "LDS",
+    "host": "evq.lds.slb.com",
+    "port": 636,
+    "use_ssl": true,
+    "secret_name": "challenge/ldscreds"
+  },
+  {
+    "name": "AD_DF2",
+    "env_type": "AD",
+    "host": "dir-tst.slb-tst.com",
+    "port": 636,
+    "use_ssl": true,
+    "secret_name": "challenge/creds"
+  },
+  {
+    "name": "ENTRA_DF2",
+    "env_type": "ENTRA",
+    "tenant_id": "organizations",
+    "client_id": "14d82eec-204b-4c2f-b7e8-296a70dab67e",
+    "secret_name": null
+  }
+]

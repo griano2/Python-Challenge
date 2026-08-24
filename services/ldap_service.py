@@ -12,8 +12,18 @@ class LDAPService:
         server = self.make_server("dir-tst.slb-tst.com")
         self.connection = self.bind(server, username, password)
         self.search_base = "DC=dir-tst,DC=slb-tst,DC=com"
+        logger.info(
+            "LDAP service initialized | host=%s | search_base=%s",
+            "dir-tst.slb-tst.com",
+            self.search_base
+        )
 
-    def make_server(self, hostname: str, port: int = 636, timeout: int = 10) -> Server:
+    def make_server(
+            self, 
+            hostname: str, 
+            port: int = 636, 
+            timeout: int = 10
+        ) -> Server:
         """Create an LDAP server object configured for SSL/TLS."""
 
         tls = Tls(validate=ssl.CERT_NONE)
@@ -27,7 +37,12 @@ class LDAPService:
             get_info="ALL",
         )
 
-    def bind(self, server: Server, username: str, password: str) -> Connection:
+    def bind(
+            self, 
+            server: Server, 
+            username: str, 
+            password: str
+        ) -> Connection:
         """Bind to the LDAP server."""
 
         try:
@@ -52,19 +67,46 @@ class LDAPService:
                 server.host)
             raise
 
-    def search(self, search_filter, attributes, size_limit=0):
+    def search(
+        self,
+        search_filter,
+        attributes,
+        size_limit=0,
+        search_base=None,
+    ):
+        search_base = search_base or self.search_base
+
+        logger.debug(
+            "LDAP search | base=%s | filter=%s | attributes=%s",
+            search_base,
+            search_filter,
+            attributes,
+        )
+
         self.connection.search(
-            search_base=self.search_base,
+            search_base=search_base,
             search_filter=search_filter,
             attributes=attributes,
             size_limit=size_limit,
         )
 
+        logger.debug(
+            "LDAP search complete | entries=%s",
+            len(self.connection.entries),
+        )
+
         return self.connection.entries
 
-    def get_group_members(self, group_name: str, filter_attribute: str = "name", attributes: list[str] | tuple[str, ...] = ("member",),size_limit: int = 0,) -> set:
+    def get_group_members(
+        self,
+        group_name: str,
+        filter_attribute: str = "name",
+        attributes: list[str] | tuple[str, ...] = ("member",),
+        size_limit: int = 0,
+    ) -> set:
 
         filter_value = f"({filter_attribute}={group_name})"
+
         entries = self.search(
             search_filter=filter_value,
             attributes=list(attributes),
@@ -72,20 +114,35 @@ class LDAPService:
         )
 
         if not entries:
-            logger.warning("No entries found for group '%s'", group_name)
+            logger.warning(
+                "Group not found | group=%s",
+                group_name
+            )
             return set()
 
         entry = entries[0]
 
         if "member" not in entry:
+            logger.info(
+                "Group has no members | group=%s",
+                group_name
+            )
             return set()
 
-        members = entry["member"].values
-        return set(members)
+        members = set(entry["member"].values)
 
-    def get_group_dn(self, group_name: str):
-        """Return group DN."""
+        logger.info(
+            "Retrieved group members | group=%s | count=%s",
+            group_name,
+            len(members)
+        )
 
+        return members
+
+    def get_group_dn(
+        self,
+        group_name: str
+    ):
         entries = self.search(
             search_filter=f"(cn={group_name})",
             attributes=["distinguishedName"],
@@ -93,69 +150,151 @@ class LDAPService:
         )
 
         if not entries:
-            logger.warning("Group '%s' not found", group_name)
-            print(f"Group '{group_name}' not found.")
+
+            logger.warning(
+                "Group DN not found | group=%s",
+                group_name
+            )
+
             return None
 
-        return entries[0].entry_dn
+        group_dn = entries[0].entry_dn
 
-    def add_members_to_group(self, target_dn: str, members: list) -> None:
+        logger.debug(
+            "Group DN resolved | group=%s | dn=%s",
+            group_name,
+            group_dn
+        )
+
+        return group_dn
+
+    def add_members_to_group(
+        self,
+        target_dn: str,
+        members: list
+    ) -> bool:
+
+        if not members:
+
+            logger.info(
+                "No members to add | group=%s",
+                target_dn
+            )
+
+            return True
+
+        failed_members = []
 
         for member in members:
+
             self.connection.modify(
                 target_dn,
                 {
-                    "member": [(MODIFY_ADD, [member])],
+                    "member": [
+                        (
+                            MODIFY_ADD,
+                            [member]
+                        )
+                    ],
                 },
             )
 
             if self.connection.result["result"] == 0:
+
                 audit_log(
                     action="ADD",
                     user_dn=member,
                     group_dn=target_dn,
-                    success=True)
-                print(f"Added {member} to the target group.")
+                    success=True
+                )
+
+                logger.info(
+                    "User added to group | user=%s | group=%s",
+                    member,
+                    target_dn
+                )
 
             else:
+
+                failed_members.append(member)
+
                 logger.error(
-                    "Failed to add user to group | user=%s | "
-                    "group=%s | result=%s",
+                    "Failed to add user to group | user=%s | group=%s | result=%s",
                     member,
                     target_dn,
-                    self.connection.result)
+                    self.connection.result
+                )
 
                 audit_log(
                     action="ADD",
                     user_dn=member,
                     group_dn=target_dn,
                     success=False,
-                    details=str(self.connection.result))
+                    details=str(
+                        self.connection.result
+                    )
+                )
 
-                print(f"Error adding {member}: " f"{self.connection.result}")
+        logger.info(
+            "Group add operation completed | group=%s | attempted=%s",
+            target_dn,
+            len(members)
+        )
 
-    def remove_members_from_group(self, target_dn: str, members: list) -> None:
+        return not failed_members
+
+    def remove_members_from_group(
+        self,
+        target_dn: str,
+        members: list
+    ) -> bool:
+
+        if not members:
+
+            logger.info(
+                "No members to remove | group=%s",
+                target_dn
+            )
+
+            return True
+
+        failed_members = []
+
         for member in members:
+
             self.connection.modify(
                 target_dn,
                 {
-                    "member": [(MODIFY_DELETE, [member])],
+                    "member": [
+                        (
+                            MODIFY_DELETE,
+                            [member]
+                        )
+                    ],
                 },
             )
 
             if self.connection.result["result"] == 0:
+
                 audit_log(
                     action="REMOVE",
                     user_dn=member,
                     group_dn=target_dn,
-                    success=True)
+                    success=True,
+                )
 
-                print(f"Removed {member} " f"from the target group.")
+                logger.info(
+                    "User removed from group | user=%s | group=%s",
+                    member,
+                    target_dn
+                )
 
             else:
+
+                failed_members.append(member)
+
                 logger.error(
-                    "Failed to remove user from group "
-                    "| user=%s | group=%s | result=%s",
+                    "Failed to remove user from group | user=%s | group=%s | result=%s",
                     member,
                     target_dn,
                     self.connection.result,
@@ -166,13 +305,30 @@ class LDAPService:
                     user_dn=member,
                     group_dn=target_dn,
                     success=False,
-                    details=str(self.connection.result))
+                    details=str(
+                        self.connection.result
+                    )
+                )
 
-                print(f"Error removing {member}: " f"{self.connection.result}")
+        logger.info(
+            "Group remove operation completed | group=%s | attempted=%s",
+            target_dn,
+            len(members)
+        )
 
-    def find_user_by_email(self, email: str) -> str | None:
+        return not failed_members
 
-        search_filter = f"(|" f"(mail={email})" f"(userPrincipalName={email})" f")"
+    def find_user_by_upn(
+        self,
+        email: str
+    ) -> str | None:
+
+        search_filter = (
+            f"(|"
+            f"(mail={email})"
+            f"(userPrincipalName={email})"
+            f")"
+        )
 
         entries = self.search(
             search_filter=search_filter,
@@ -180,26 +336,83 @@ class LDAPService:
                 "distinguishedName",
                 "mail",
                 "sAMAccountName",
-                "userPrincipalName"],
+                "userPrincipalName"
+            ],
             size_limit=10,
         )
 
         if not entries:
-            logger.warning("No user found for %s", email)
-            print(f"No user found for '{email}'")
+
+            logger.warning(
+                "User not found | email=%s",
+                email
+            )
+
             return None
 
         user = entries[0]
 
-        # print("\nFound user:")
-        # print(" DN:", user.entry_dn)
-        # print(" Alias:", getattr(user, "sAMAccountName", ""))
-        # print(" Mail:", getattr(user, "mail", ""))
-        # print(" UPN:", getattr(user, "userPrincipalName", ""))
-
         logger.info(
             "User lookup successful | email=%s | dn=%s",
             email,
-            user.entry_dn)
+            user.entry_dn
+        )
+
+        return user.entry_dn
+
+    def find_upn_by_dn(
+        self,
+        user_dn: str
+    ) -> str | None:
+
+        entries = self.search(
+            search_base=user_dn,
+            search_filter="(objectClass=*)",
+            attributes=["userPrincipalName"],
+            size_limit=1,
+        )
+
+        if not entries or "userPrincipalName" not in entries[0]:
+            logger.warning(
+                "User UPN not found | dn=%s",
+                user_dn
+            )
+            return None
+
+        upn = entries[0]["userPrincipalName"].value
+
+        logger.info(
+            "User UPN lookup successful | dn=%s | upn=%s",
+            user_dn,
+            upn
+        )
+
+        return upn
+
+    def find_user_by_uid(
+        self,
+        uid: str
+    ) -> str | None:
+
+        entries = self.search(
+                search_filter=f"(uidNumber={uid})",
+                attributes=["distinguishedName"],
+                size_limit=1,
+            )
+
+        if not entries:
+            logger.warning(
+                "User not found | uid=%s",
+                uid
+            )
+            return None
+
+        user = entries[0]
+
+        logger.info(
+            "User lookup successful | uid=%s | dn=%s",
+            uid,
+            user.entry_dn
+        )
 
         return user.entry_dn

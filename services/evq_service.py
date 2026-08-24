@@ -2,7 +2,7 @@ from ldap3 import Connection, Server, Tls, MODIFY_ADD, MODIFY_DELETE, SUBTREE
 from utils.audit import audit_log
 from utils.logging_config import logger
 from services.vault_service import VaultService
-import ssl, re
+import ssl
 
 class EVQLDAPService:
 
@@ -15,10 +15,19 @@ class EVQLDAPService:
             username,
             password
         )
-
         self.search_base = "OU=group,O=slb,C=an"
+        logger.info(
+            "EVQ service initialized | host=%s | search_base=%s",
+            "evq.lds.slb.com",
+            self.search_base
+        )
         
-    def make_server(self, hostname: str, port: int = 636, timeout: int = 10) -> Server:
+    def make_server(
+            self, 
+            hostname: str, 
+            port: int = 636, 
+            timeout: int = 10
+        ) -> Server:
         """Create an LDAP server object configured for SSL/TLS."""
 
         tls = Tls(validate=ssl.CERT_NONE)
@@ -32,7 +41,12 @@ class EVQLDAPService:
             get_info="ALL",
         )
 
-    def bind(self, server: Server, username: str, password: str) -> Connection:
+    def bind(
+            self, 
+            server: Server, 
+            username: str, 
+            password: str
+        ) -> Connection:
         """Bind to the LDAP server."""
 
         try:
@@ -57,20 +71,48 @@ class EVQLDAPService:
                 server.host)
             raise
 
-    def search(self, search_filter, attributes, size_limit=0):
+    def search(
+        self,
+        search_filter,
+        attributes,
+        size_limit=0,
+        search_base=None,
+    ):
+        search_base = search_base or self.search_base
+
+        logger.debug(
+            "LDAP search | base=%s | filter=%s | attributes=%s",
+            search_base,
+            search_filter,
+            attributes,
+        )
+
         self.connection.search(
-            search_base=self.search_base,
+            search_base=search_base,
             search_filter=search_filter,
             attributes=attributes,
             size_limit=size_limit,
         )
 
+        logger.debug(
+            "LDAP search complete | entries=%s",
+            len(self.connection.entries),
+        )
+
         return self.connection.entries
 
-    def add_members_to_group(self, group_alias: str, member_dns: list[str]):
+    def add_members_to_group(
+            self, 
+            group_alias: str, 
+            member_dns: list[str]
+        ) -> bool:
         group_dn = self.get_group_dn(group_alias)
         if not member_dns:
-            return
+            logger.info(
+                "No members to add | group=%s",
+                group_alias
+            )
+            return True
 
         self.connection.modify(
             group_dn,
@@ -92,15 +134,13 @@ class EVQLDAPService:
                     group_dn=group_dn,
                     success=True
                 )
-            print(f"Added {len(member_dns)} members " f"to group.")
-
-        else:
-            logger.error(
-                "Failed bulk add | group=%s | result=%s",
-                group_dn,
-                self.connection.result
+            logger.info(
+                "Group add successful | group=%s | members_added=%s",
+                group_alias,
+                len(member_dns)
             )
 
+        else:
             for member_dn in member_dns:
                 audit_log(
                     action="ADD",
@@ -111,11 +151,28 @@ class EVQLDAPService:
                         self.connection.result
                     )
                 )
-            print(f"Error adding members: "f"{self.connection.result}")
+            logger.error(
+                "Group add failed | group=%s | result=%s",
+                group_alias,
+                self.connection.result
+            )
 
-    def remove_members_from_group(self, group_alias: str, member_dns: list[str]):
+            return False
+
+        return True
+
+    def remove_members_from_group(
+            self,
+            group_alias: str,
+            member_dns: list[str]
+        ) -> bool:
         if not member_dns:
-            return
+            logger.info(
+                "No members to remove | group=%s",
+                group_alias
+            )
+            return True
+        
         group_dn = self.get_group_dn(group_alias)
         self.connection.modify(
             group_dn,
@@ -137,15 +194,13 @@ class EVQLDAPService:
                     group_dn=group_dn,
                     success=True
                 )
-            print(f"Removed {len(member_dns)} members " f"from group.")
-
-        else:
-            logger.error(
-                "Failed bulk remove | group=%s | result=%s",
-                group_dn,
-                self.connection.result
+            logger.info(
+                "Group remove successful | group=%s | members_removed=%s",
+                group_alias,
+                len(member_dns)
             )
 
+        else:
             for member_dn in member_dns:
                 audit_log(
                     action="REMOVE",
@@ -156,95 +211,85 @@ class EVQLDAPService:
                         self.connection.result
                     )
                 )
-            print(f"Error removing members: " f"{self.connection.result}")
-
-    def get_group_members(self, group_alias: str) -> set[str]:
-        members = self.get_group_unique_members(group_alias)
-        result = set()
-
-        for member_dn in members:
-            self.connection.search(
-                search_base=member_dn,
-                search_filter="(objectClass=*)",
-                attributes=["activedirectorydn"]
+            logger.error(
+                "Group remove failed | group=%s | result=%s",
+                group_alias,
+                self.connection.result
             )
 
-            if not self.connection.entries:
-                continue
+            return False
 
-            user = self.connection.entries[0]
-            if hasattr(user, "activedirectorydn"):
-                result.add(user.activedirectorydn.value)
-        return result
+        return True
 
-    def get_group_unique_members(self, group_alias: str) -> set[str]:
+    def get_group_members(
+        self,
+        group_alias: str
+    ) -> set[str]:
         self.connection.search(
             search_base="O=slb,C=an",
             search_filter=f"(alias={group_alias})",
             search_scope=SUBTREE,
             attributes=["cn", "uniqueMember"]
         )
-        
-        if not self.connection.entries:
-            print(f"Group not found: {group_alias}")
-            return
-        
-        group = self.connection.entries[0]
-        if not hasattr(group, "uniqueMember"):
-            print("No members found")
-            return
-
-        return set(group.uniqueMember.values)
-
-    def find_lds_user_by_ad_dn(self, ad_dn: str):
-        match = re.search(r"CN=([^,]+)", ad_dn, re.IGNORECASE)
-        if not match:
-            return None
-
-        cn = match.group(1).strip()
-        self.connection.search(
-            search_base="O=slb,C=an",
-            search_filter=f"(cn={cn})",
-            search_scope=SUBTREE,
-            attributes=["cn"]
-        )
 
         if not self.connection.entries:
-            return None
-        return self.connection.entries[0]
 
-    def get_identity(self, dn: str) -> str:
-        match = re.search(r"CN=([^,]+)", dn, re.IGNORECASE)
-        if not match:
-            return ""
-        return match.group(1).strip().upper()
-
-    def get_group_member_mapping(self, group_alias: str) -> dict[str, str]:
-        result = {}
-
-        for lds_dn in self.get_group_unique_members(group_alias):
-            self.connection.search(
-                search_base=lds_dn,
-                search_filter="(objectClass=*)",
-                attributes=["activedirectorydn"]
+            logger.warning(
+                "Group not found | group=%s",
+                group_alias
             )
 
-            if not self.connection.entries:
-                continue
+            return set()
 
-            user = self.connection.entries[0]
+        group = self.connection.entries[0]
 
-            if not hasattr(user, "activedirectorydn"):
-                continue
+        if not hasattr(group, "uniqueMember"):
 
-            ad_dn = user.activedirectorydn.value
-            identity = self.get_identity(ad_dn)
+            logger.info(
+                "Group has no members | group=%s",
+                group_alias
+            )
 
-            result[identity] = lds_dn
+            return set()
 
-        return result
+        members = set(
+            group.uniqueMember.values
+        )
 
-    def get_group_dn(self, group_alias: str) -> str | None:
+        logger.info(
+            "Retrieved unique members | group=%s | count=%s",
+            group_alias,
+            len(members)
+        )
+
+        return members
+
+    def find_user_by_id(
+        self,
+        directory_id: str,
+    ) -> str | None:
+
+        entries = self.search(
+            search_base="O=slb,C=an",
+            search_filter=f"(ID={directory_id})",
+            attributes=["distinguishedName", "ID"],
+            size_limit=1,
+        )
+
+        if not entries:
+            logger.warning(
+                "User not found | id=%s",
+                directory_id,
+            )
+            return None
+
+        return entries[0].entry_dn
+
+    def get_group_dn(
+        self,
+        group_alias: str
+    ) -> str | None:
+
         self.connection.search(
             search_base="O=slb,C=an",
             search_filter=f"(alias={group_alias})",
@@ -253,10 +298,23 @@ class EVQLDAPService:
         )
 
         if not self.connection.entries:
-            print(
-                f"Group not found: "
-                f"{group_alias}"
+
+            logger.warning(
+                "Group DN not found | group=%s",
+                group_alias
             )
+
             return None
 
-        return self.connection.entries[0].entry_dn
+        group_dn = (
+            self.connection.entries[0]
+            .entry_dn
+        )
+
+        logger.debug(
+            "Group DN resolved | group=%s | dn=%s",
+            group_alias,
+            group_dn
+        )
+
+        return group_dn

@@ -1,10 +1,10 @@
-from services.envq_service import EVQLDAPService
+from services.evq_service import EVQLDAPService
 from ldap3 import MODIFY_DELETE, SUBTREE
 
 
 def run():
 
-    group_alias = "Other_testing-ldap-grpter"
+    group_alias = "Other_Python-Test-Group-6"
 
     evq = EVQLDAPService()
 

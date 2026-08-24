@@ -23,7 +23,7 @@ def run():
 
     for email in USERS:
 
-        user_dn = ldap.find_user_by_email(email)
+        user_dn = ldap.find_user_by_upn(email)
 
         if user_dn:
             users_to_add.append(user_dn)
