@@ -1,5 +1,4 @@
 from services.ldap_service import LDAPService
-from services.evq_service import EVQLDAPService
 
 AD_GROUPS = [
     "Python-Test-Group-2",
@@ -32,7 +31,7 @@ def clear_ad_group(ldap: LDAPService, group_name: str) -> None:
         print(f"Failed to remove one or more members from {group_name}.")
 
 
-def clear_evq_group(evq: EVQLDAPService, group_alias: str) -> None:
+def clear_evq_group(evq: LDAPService, group_alias: str) -> None:
     members = evq.get_group_members(group_alias)
 
     if not members:
@@ -52,7 +51,7 @@ def clear_evq_group(evq: EVQLDAPService, group_alias: str) -> None:
 
 def run() -> None:
     ldap = LDAPService()
-    evq = EVQLDAPService()
+    evq = LDAPService(host="evq.lds.slb.com", directory_type="LDS")
 
     for group_name in AD_GROUPS:
         clear_ad_group(ldap, group_name)

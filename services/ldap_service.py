@@ -1,4 +1,4 @@
-from ldap3 import Connection, Server, Tls, MODIFY_ADD, MODIFY_DELETE
+from ldap3 import Connection, Server, Tls, MODIFY_ADD, MODIFY_DELETE, SUBTREE
 from utils.audit import audit_log
 from utils.logging_config import logger
 from services.vault_service import VaultService
@@ -6,22 +6,45 @@ import ssl
 
 class LDAPService:
 
-    def __init__(self):
+    def __init__(
+        self,
+        host: str = "dir-tst.slb-tst.com",
+        port: int = 636,
+        use_ssl: bool = True,
+        search_base: str | None = None,
+        directory_type: str = "AD",
+    ):
+        self.directory_type = directory_type.upper()
+        if self.directory_type not in {"AD", "LDS"}:
+            raise ValueError(f"Unsupported LDAP directory type: {directory_type}")
+
         vault = VaultService()
-        username, password = vault.get_ad_creds()
-        server = self.make_server("dir-tst.slb-tst.com")
+        if self.directory_type == "LDS":
+            username, password = vault.get_lds_creds()
+            default_search_base = "O=slb,C=an"
+        else:
+            username, password = vault.get_ad_creds()
+            default_search_base = "DC=dir-tst,DC=slb-tst,DC=com"
+
+        server = self.make_server(host, port, use_ssl=use_ssl)
         self.connection = self.bind(server, username, password)
-        self.search_base = "DC=dir-tst,DC=slb-tst,DC=com"
+        self.host = host
+        self.port = port
+        self.use_ssl = use_ssl
+        self.search_base = search_base or default_search_base
         logger.info(
-            "LDAP service initialized | host=%s | search_base=%s",
-            "dir-tst.slb-tst.com",
+            "LDAP service initialized | type=%s | host=%s | port=%s | search_base=%s",
+            self.directory_type,
+            host,
+            port,
             self.search_base
         )
 
     def make_server(
             self, 
             hostname: str, 
-            port: int = 636, 
+            port: int = 636,
+            use_ssl: bool = True,
             timeout: int = 10
         ) -> Server:
         """Create an LDAP server object configured for SSL/TLS."""
@@ -32,7 +55,7 @@ class LDAPService:
             hostname,
             port=port,
             connect_timeout=timeout,
-            use_ssl=True,
+            use_ssl=use_ssl,
             tls=tls,
             get_info="ALL",
         )
@@ -86,6 +109,7 @@ class LDAPService:
         self.connection.search(
             search_base=search_base,
             search_filter=search_filter,
+            search_scope=SUBTREE,
             attributes=attributes,
             size_limit=size_limit,
         )
@@ -105,6 +129,10 @@ class LDAPService:
         size_limit: int = 0,
     ) -> set:
 
+        if self.directory_type == "LDS":
+            filter_attribute = "alias"
+            attributes = ("uniqueMember",)
+
         filter_value = f"({filter_attribute}={group_name})"
 
         entries = self.search(
@@ -122,14 +150,15 @@ class LDAPService:
 
         entry = entries[0]
 
-        if "member" not in entry:
+        member_attribute = "uniqueMember" if self.directory_type == "LDS" else "member"
+        if member_attribute not in entry:
             logger.info(
                 "Group has no members | group=%s",
                 group_name
             )
             return set()
 
-        members = set(entry["member"].values)
+        members = set(entry[member_attribute].values)
 
         logger.info(
             "Retrieved group members | group=%s | count=%s",
@@ -144,7 +173,11 @@ class LDAPService:
         group_name: str
     ):
         entries = self.search(
-            search_filter=f"(cn={group_name})",
+            search_filter=(
+                f"(alias={group_name})"
+                if self.directory_type == "LDS"
+                else f"(cn={group_name})"
+            ),
             attributes=["distinguishedName"],
             size_limit=1,
         )
@@ -174,6 +207,13 @@ class LDAPService:
         members: list
     ) -> bool:
 
+        if self.directory_type == "LDS":
+            group_alias = target_dn
+            target_dn = self.get_group_dn(group_alias)
+            if not target_dn:
+                logger.error("Group not found | group=%s", group_alias)
+                return False
+
         if not members:
 
             logger.info(
@@ -183,6 +223,7 @@ class LDAPService:
 
             return True
 
+        member_attribute = "uniqueMember" if self.directory_type == "LDS" else "member"
         failed_members = []
 
         for member in members:
@@ -190,7 +231,7 @@ class LDAPService:
             self.connection.modify(
                 target_dn,
                 {
-                    "member": [
+                    member_attribute: [
                         (
                             MODIFY_ADD,
                             [member]
@@ -249,6 +290,13 @@ class LDAPService:
         members: list
     ) -> bool:
 
+        if self.directory_type == "LDS":
+            group_alias = target_dn
+            target_dn = self.get_group_dn(group_alias)
+            if not target_dn:
+                logger.error("Group not found | group=%s", group_alias)
+                return False
+
         if not members:
 
             logger.info(
@@ -258,6 +306,7 @@ class LDAPService:
 
             return True
 
+        member_attribute = "uniqueMember" if self.directory_type == "LDS" else "member"
         failed_members = []
 
         for member in members:
@@ -265,7 +314,7 @@ class LDAPService:
             self.connection.modify(
                 target_dn,
                 {
-                    "member": [
+                    member_attribute: [
                         (
                             MODIFY_DELETE,
                             [member]
@@ -359,6 +408,25 @@ class LDAPService:
         )
 
         return user.entry_dn
+
+    def find_user_by_id(
+        self,
+        directory_id: str,
+    ) -> str | None:
+        """Find an LDS user by its directory ID."""
+
+        entries = self.search(
+            search_base=self.search_base,
+            search_filter=f"(ID={directory_id})",
+            attributes=["distinguishedName", "ID"],
+            size_limit=1,
+        )
+
+        if not entries:
+            logger.warning("User not found | id=%s", directory_id)
+            return None
+
+        return entries[0].entry_dn
 
     def find_upn_by_dn(
         self,

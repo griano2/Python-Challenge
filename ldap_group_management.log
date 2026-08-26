@@ -1,0 +1,56 @@
+2026-08-26 08:39:54,640 | INFO | Credentials successfully retrieved from Vault
+2026-08-26 08:39:58,410 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-08-26 08:39:58,410 | INFO | LDAP service initialized | type=AD | host=dir-tst.slb-tst.com | port=636 | search_base=DC=dir-tst,DC=slb-tst,DC=com
+2026-08-26 08:39:58,818 | INFO | EntraIDService initialized | tenant=organizations
+2026-08-26 08:39:58,825 | INFO | Credentials successfully retrieved from Vault
+2026-08-26 08:40:00,641 | INFO | LDAP connection successful | user=GuermeurGroupManagem@slb.com | server=evq.lds.slb.com
+2026-08-26 08:40:00,641 | INFO | LDAP service initialized | type=LDS | host=evq.lds.slb.com | port=636 | search_base=O=slb,C=an
+2026-08-26 08:40:00,642 | INFO | Found 3 enabled sync pairs
+2026-08-26 08:40:00,642 | INFO | Running sync 'Python Test Group Sync AD to AD' (AD_TO_AD)
+2026-08-26 08:40:00,642 | INFO | Starting AD_TO_AD sync | source=Python-Test-Group-1 | target=Python-Test-Group-2
+2026-08-26 08:40:01,278 | INFO | Retrieved group members | group=Python-Test-Group-1 | count=5
+2026-08-26 08:40:01,489 | INFO | Retrieved group members | group=Python-Test-Group-2 | count=5
+2026-08-26 08:40:01,490 | INFO | No members to add | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-26 08:40:01,490 | INFO | No members to remove | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-26 08:40:01,490 | INFO | AD_TO_AD complete | source=Python-Test-Group-1 | target=Python-Test-Group-2 | source_members=5 | target_members=5 | add=0 | remove=0
+2026-08-26 08:40:01,490 | INFO | AUDIT | action=SYNC_AD_TO_AD | user=Python-Test-Group-1 | group=Python-Test-Group-2 | success=True | details=source_members=5;target_members=5;add=0;remove=0
+2026-08-26 08:40:01,490 | INFO | Sync completed successfully: Python Test Group Sync AD to AD
+2026-08-26 08:40:01,490 | INFO | Running sync 'Python Test Group Sync Entra to AD' (ENTRA_TO_AD)
+2026-08-26 08:40:01,490 | INFO | Starting ENTRA_TO_AD sync | source=Python-Test-Group-3 | target=Python-Test-Group-4
+2026-08-26 08:40:01,490 | INFO | Searching EntraID group | group=Python-Test-Group-3
+2026-08-26 08:40:01,586 | INFO | Starting interactive EntraID authentication
+2026-08-26 08:40:28,007 | INFO | EntraID authentication successful
+2026-08-26 08:40:28,797 | INFO | EntraID group found | group=Python-Test-Group-3 | id=61d5639d-ce08-4093-9c97-ef68286c09e4
+2026-08-26 08:40:29,010 | INFO | Retrieving EntraID group members | group=Python-Test-Group-3
+2026-08-26 08:40:29,011 | INFO | Searching EntraID group | group=Python-Test-Group-3
+2026-08-26 08:40:29,836 | INFO | EntraID group found | group=Python-Test-Group-3 | id=61d5639d-ce08-4093-9c97-ef68286c09e4
+2026-08-26 08:40:30,803 | INFO | EntraID members retrieved | group=Python-Test-Group-3 | count=5 | pages=1
+2026-08-26 08:40:31,026 | INFO | User lookup successful | email=ADM-GRiano2@slb-tst.com | dn=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-26 08:40:31,238 | INFO | User lookup successful | email=NEfendi@slb-tst.com | dn=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-26 08:40:31,452 | INFO | User lookup successful | email=ADM-JCastano5@slb-tst.com | dn=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-26 08:40:31,667 | INFO | User lookup successful | email=MBXHoustonAP@slb-tst.com | dn=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-26 08:40:31,892 | INFO | User lookup successful | email=adm-JPena49@slb-tst.com | dn=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-26 08:40:32,109 | INFO | Retrieved group members | group=Python-Test-Group-4 | count=5
+2026-08-26 08:40:32,109 | INFO | No members to add | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-26 08:40:32,110 | INFO | No members to remove | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-08-26 08:40:32,110 | INFO | ENTRA_TO_AD complete | source=Python-Test-Group-3 | target=Python-Test-Group-4 | source_members=5 | target_members=5 | add=0 | remove=0
+2026-08-26 08:40:32,110 | INFO | AUDIT | action=SYNC_ENTRA_TO_AD | user=Python-Test-Group-3 | group=Python-Test-Group-4 | success=True | details=source_members=5;target_members=5;add=0;remove=0
+2026-08-26 08:40:32,110 | INFO | Sync completed successfully: Python Test Group Sync Entra to AD
+2026-08-26 08:40:32,110 | INFO | Running sync 'Python Test Group Sync AD to LDS' (AD_TO_LDS)
+2026-08-26 08:40:32,111 | INFO | Starting AD_TO_LDS sync | source=Python-Test-Group-5 | target=Other_Python-Test-Group-6
+2026-08-26 08:40:32,749 | INFO | Retrieved group members | group=Python-Test-Group-5 | count=45
+2026-08-26 08:40:33,392 | WARNING | User not found | id=1261269
+2026-08-26 08:40:33,602 | WARNING | User not found | id=1104212
+2026-08-26 08:40:34,655 | WARNING | User not found | id=1105150
+2026-08-26 08:40:37,025 | WARNING | User not found | id=1047247
+2026-08-26 08:40:37,908 | WARNING | User not found | id=1105560
+2026-08-26 08:40:40,256 | WARNING | User not found | id=1297772
+2026-08-26 08:40:42,154 | WARNING | User not found | id=1297761
+2026-08-26 08:40:42,575 | WARNING | User not found | id=1297823
+2026-08-26 08:40:42,997 | INFO | Retrieved group members | group=Other_Python-Test-Group-6 | count=37
+2026-08-26 08:40:42,997 | INFO | Delta calculated | source=Python-Test-Group-5 | target=Other_Python-Test-Group-6 | add=0 | remove=0
+2026-08-26 08:40:43,206 | INFO | No members to add | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-08-26 08:40:43,420 | INFO | No members to remove | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-08-26 08:40:43,420 | INFO | AD_TO_LDS complete | source=Python-Test-Group-5 | target=Other_Python-Test-Group-6 | source_members=45 | target_members=37 | add=0 | remove=0
+2026-08-26 08:40:43,420 | INFO | AUDIT | action=SYNC_AD_TO_LDS | user=Python-Test-Group-5 | group=Other_Python-Test-Group-6 | success=True | details=source_members=45;target_members=37;add=0;remove=0
+2026-08-26 08:40:43,420 | INFO | Sync completed successfully: Python Test Group Sync AD to LDS

@@ -1,12 +1,11 @@
 from services.ldap_service import LDAPService
 from services.entraid_service import EntraIDService
-from services.evq_service import EVQLDAPService
 from utils.logging_config import logger
 from utils.audit import audit_log
 
 
 class SyncService:
-    def __init__(self, ldap_service: LDAPService, entraid_service: EntraIDService, evq_service: EVQLDAPService):
+    def __init__(self, ldap_service: LDAPService, entraid_service: EntraIDService, evq_service: LDAPService):
         self.ldap = ldap_service
         self.entra = entraid_service
         self.evq = evq_service

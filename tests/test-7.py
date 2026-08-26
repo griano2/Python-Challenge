@@ -1,4 +1,4 @@
-from services.evq_service import EVQLDAPService
+from services.ldap_service import LDAPService
 
 MEMBERS = [
     "CN=Julieth Alvarez  2099886,OU=student,O=slb,C=an",
@@ -96,7 +96,7 @@ MEMBERS = [
 
 def run():
 
-    evq = EVQLDAPService()
+    evq = LDAPService(host="evq.lds.slb.com", directory_type="LDS")
 
     print(f"Members to add: {len(MEMBERS)}")
     
