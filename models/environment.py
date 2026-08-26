@@ -24,5 +24,8 @@ class Environment:
 
     tenant_id: Optional[str] = None
     client_id: Optional[str] = None
+    authority: Optional[str] = None
+    graph_base_url: Optional[str] = None
+    scopes: Optional[list[str]] = None
 
     secret_name: Optional[str] = None

@@ -32,6 +32,9 @@
     "env_type": "ENTRA",
     "tenant_id": "organizations",
     "client_id": "14d82eec-204b-4c2f-b7e8-296a70dab67e",
+    "authority": "https://login.microsoftonline.com/organizations",
+    "graph_base_url": "https://graph.microsoft.com/v1.0",
+    "scopes": ["Group.ReadWrite.All"],
     "secret_name": null
   }
 ]

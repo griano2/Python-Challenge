@@ -39,7 +39,10 @@ class ServiceFactory:
 
             return EntraIDService(
                 tenant_id=environment.tenant_id,
-                client_id=environment.client_id
+                client_id=environment.client_id,
+                authority=environment.authority,
+                graph_base_url=environment.graph_base_url,
+                scopes=environment.scopes,
             )
 
         raise ValueError(

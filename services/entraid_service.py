@@ -9,14 +9,25 @@ class EntraIDService:
     def __init__(
         self,
         client_id: str,
-        tenant_id: str = "organizations"
+        tenant_id: str,
+        authority: str,
+        graph_base_url: str,
+        scopes: list[str],
     ):
+        if not authority:
+            raise ValueError("Entra environment requires authority")
+        if not graph_base_url:
+            raise ValueError("Entra environment requires graph_base_url")
+        if not scopes:
+            raise ValueError("Entra environment requires scopes")
+
         self.app = msal.PublicClientApplication(
             client_id=client_id,
-            authority=f"https://login.microsoftonline.com/{tenant_id}",
+            authority=authority,
         )
 
-        self.base_url = "https://graph.microsoft.com/v1.0"
+        self.base_url = graph_base_url.rstrip("/")
+        self.scopes = scopes
 
         logger.info(
             "EntraIDService initialized | tenant=%s",
@@ -34,7 +45,7 @@ class EntraIDService:
             )
 
             result = self.app.acquire_token_silent(
-                scopes=["Group.ReadWrite.All"],
+                scopes=self.scopes,
                 account=accounts[0],
             )
 
@@ -49,7 +60,7 @@ class EntraIDService:
         )
 
         result = self.app.acquire_token_interactive(
-            scopes=["Group.ReadWrite.All"],
+            scopes=self.scopes,
         )
 
         if "access_token" not in result:

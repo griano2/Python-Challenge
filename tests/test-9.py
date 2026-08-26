@@ -1,8 +1,6 @@
-from services.entraid_service import EntraIDService
+from services.service_factory import ServiceFactory
 
 GROUP_NAME = "Python-Test-Group-3"
-CLIENT_ID = "14d82eec-204b-4c2f-b7e8-296a70dab67e"
-
 UPNS = [
     "AAlhashous@slb-tst.com",
     "NMajid5@slb-tst.com",
@@ -12,7 +10,7 @@ UPNS = [
 
 
 def run() -> None:
-    entra = EntraIDService(client_id=CLIENT_ID)
+    entra = ServiceFactory().get("ENTRA_DF2")
 
     succeeded = entra.add_members_to_group(
         GROUP_NAME,
