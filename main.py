@@ -410,7 +410,6 @@ def main() -> None:
         print("5) Sync LDS EVQ group with on-premise group (GRP6 -> GRP5)")
         print("6) Sync on-premise group with LDS EVQ group  (GRP5 -> GRP6)")
         print("7) Sync on-premise group with EntraID group (GRP1 -> GRP3)")
-        print("8) Test fcn")
         print("0) Exit")
         option = input("Select an option: ").strip()
 
@@ -441,9 +440,6 @@ def main() -> None:
         
         elif option == "7":
             sync_ad_to_entraid("Python-Test-Group-4", "Python-Test-Group-3")
-
-        elif option == "8":
-            evq.find_user_by_id("1359602")
 
         elif option == "0":
             break
