@@ -6,8 +6,8 @@ from typing import Optional
 class Environment:
 
     name: str
-    display_name: str
     env_type: str
+    display_name: Optional[str] = None
 
     enabled: bool = True
 
@@ -16,6 +16,11 @@ class Environment:
     use_ssl: bool = True
 
     search_base: Optional[str] = None
+    group_filter_attribute: Optional[str] = None
+    member_attribute: Optional[str] = None
+    user_id_attribute: Optional[str] = None
+    uid_attribute: str = "uidNumber"
+    group_name_is_alias: Optional[bool] = None
 
     tenant_id: Optional[str] = None
     client_id: Optional[str] = None

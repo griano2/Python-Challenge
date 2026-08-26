@@ -1,15 +1,14 @@
 from services.ldap_service import LDAPService
 from services.entraid_service import EntraIDService
+from services.service_factory import ServiceFactory
 from utils.logging_config import logger
 from utils.audit import audit_log
 import importlib, re
 
-ldap = LDAPService()
+services = ServiceFactory()
+ldap = services.get("AD_DF2")
 entra = EntraIDService(client_id="14d82eec-204b-4c2f-b7e8-296a70dab67e")
-evq = LDAPService(
-    host="evq.lds.slb.com",
-    directory_type="LDS",
-)
+evq = services.get("LDS_TEST")
 
 def print_group_members():
     print("Which group do you want to see?")

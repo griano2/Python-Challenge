@@ -1,4 +1,5 @@
 from services.ldap_service import LDAPService
+from services.service_factory import ServiceFactory
 
 AD_GROUPS = [
     "Python-Test-Group-2",
@@ -50,8 +51,8 @@ def clear_evq_group(evq: LDAPService, group_alias: str) -> None:
 
 
 def run() -> None:
-    ldap = LDAPService()
-    evq = LDAPService(host="evq.lds.slb.com", directory_type="LDS")
+    ldap = ServiceFactory().get("AD_DF2")
+    evq = ServiceFactory().get("LDS_TEST")
 
     for group_name in AD_GROUPS:
         clear_ad_group(ldap, group_name)

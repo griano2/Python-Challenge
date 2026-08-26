@@ -1,4 +1,5 @@
 from services.ldap_service import LDAPService
+from services.service_factory import ServiceFactory
 
 MEMBERS = [
     "CN=Julieth Alvarez  2099886,OU=student,O=slb,C=an",
@@ -96,7 +97,7 @@ MEMBERS = [
 
 def run():
 
-    evq = LDAPService(host="evq.lds.slb.com", directory_type="LDS")
+    evq = ServiceFactory().get("LDS_TEST")
 
     print(f"Members to add: {len(MEMBERS)}")
     

@@ -1,11 +1,12 @@
 from services.ldap_service import LDAPService
+from services.service_factory import ServiceFactory
 
 GROUP_NAME = "Python-Test-Group-1"
 
 
 def run():
 
-    ldap = LDAPService()
+    ldap = ServiceFactory().get("AD_DF2")
 
     group_dn = ldap.get_group_dn(GROUP_NAME)
 

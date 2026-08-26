@@ -1,4 +1,5 @@
 from services.ldap_service import LDAPService
+from services.service_factory import ServiceFactory
 from ldap3 import MODIFY_DELETE, SUBTREE
 
 
@@ -6,7 +7,7 @@ def run():
 
     group_alias = "Other_Python-Test-Group-6"
 
-    evq = LDAPService(host="evq.lds.slb.com", directory_type="LDS")
+    evq = ServiceFactory().get("LDS_TEST")
 
     evq.connection.search(
         search_base="O=slb,C=an",

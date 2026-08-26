@@ -8,33 +8,34 @@ class LDAPService:
 
     def __init__(
         self,
-        host: str = "dir-tst.slb-tst.com",
-        port: int = 636,
-        use_ssl: bool = True,
-        search_base: str | None = None,
-        directory_type: str = "AD",
+        host: str,
+        port: int,
+        use_ssl: bool,
+        search_base: str,
+        group_filter_attribute: str,
+        member_attribute: str,
+        user_id_attribute: str,
+        uid_attribute: str,
+        group_name_is_alias: bool,
+        secret_name: str,
     ):
-        self.directory_type = directory_type.upper()
-        if self.directory_type not in {"AD", "LDS"}:
-            raise ValueError(f"Unsupported LDAP directory type: {directory_type}")
+        self.group_filter_attribute = group_filter_attribute
+        self.member_attribute = member_attribute
+        self.user_id_attribute = user_id_attribute
+        self.uid_attribute = uid_attribute
+        self.group_name_is_alias = group_name_is_alias
 
         vault = VaultService()
-        if self.directory_type == "LDS":
-            username, password = vault.get_lds_creds()
-            default_search_base = "O=slb,C=an"
-        else:
-            username, password = vault.get_ad_creds()
-            default_search_base = "DC=dir-tst,DC=slb-tst,DC=com"
+        username, password = vault.get_creds(secret_name)
 
         server = self.make_server(host, port, use_ssl=use_ssl)
         self.connection = self.bind(server, username, password)
         self.host = host
         self.port = port
         self.use_ssl = use_ssl
-        self.search_base = search_base or default_search_base
+        self.search_base = search_base
         logger.info(
-            "LDAP service initialized | type=%s | host=%s | port=%s | search_base=%s",
-            self.directory_type,
+            "LDAP service initialized | host=%s | port=%s | search_base=%s",
             host,
             port,
             self.search_base
@@ -124,14 +125,13 @@ class LDAPService:
     def get_group_members(
         self,
         group_name: str,
-        filter_attribute: str = "name",
-        attributes: list[str] | tuple[str, ...] = ("member",),
+        filter_attribute: str | None = None,
+        attributes: list[str] | tuple[str, ...] | None = None,
         size_limit: int = 0,
     ) -> set:
 
-        if self.directory_type == "LDS":
-            filter_attribute = "alias"
-            attributes = ("uniqueMember",)
+        filter_attribute = filter_attribute or self.group_filter_attribute
+        attributes = attributes or (self.member_attribute,)
 
         filter_value = f"({filter_attribute}={group_name})"
 
@@ -150,15 +150,14 @@ class LDAPService:
 
         entry = entries[0]
 
-        member_attribute = "uniqueMember" if self.directory_type == "LDS" else "member"
-        if member_attribute not in entry:
+        if self.member_attribute not in entry:
             logger.info(
                 "Group has no members | group=%s",
                 group_name
             )
             return set()
 
-        members = set(entry[member_attribute].values)
+        members = set(entry[self.member_attribute].values)
 
         logger.info(
             "Retrieved group members | group=%s | count=%s",
@@ -173,11 +172,7 @@ class LDAPService:
         group_name: str
     ):
         entries = self.search(
-            search_filter=(
-                f"(alias={group_name})"
-                if self.directory_type == "LDS"
-                else f"(cn={group_name})"
-            ),
+            search_filter=f"({self.group_filter_attribute}={group_name})",
             attributes=["distinguishedName"],
             size_limit=1,
         )
@@ -207,7 +202,7 @@ class LDAPService:
         members: list
     ) -> bool:
 
-        if self.directory_type == "LDS":
+        if self.group_name_is_alias:
             group_alias = target_dn
             target_dn = self.get_group_dn(group_alias)
             if not target_dn:
@@ -223,7 +218,6 @@ class LDAPService:
 
             return True
 
-        member_attribute = "uniqueMember" if self.directory_type == "LDS" else "member"
         failed_members = []
 
         for member in members:
@@ -231,7 +225,7 @@ class LDAPService:
             self.connection.modify(
                 target_dn,
                 {
-                    member_attribute: [
+                    self.member_attribute: [
                         (
                             MODIFY_ADD,
                             [member]
@@ -290,7 +284,7 @@ class LDAPService:
         members: list
     ) -> bool:
 
-        if self.directory_type == "LDS":
+        if self.group_name_is_alias:
             group_alias = target_dn
             target_dn = self.get_group_dn(group_alias)
             if not target_dn:
@@ -306,7 +300,6 @@ class LDAPService:
 
             return True
 
-        member_attribute = "uniqueMember" if self.directory_type == "LDS" else "member"
         failed_members = []
 
         for member in members:
@@ -314,7 +307,7 @@ class LDAPService:
             self.connection.modify(
                 target_dn,
                 {
-                    member_attribute: [
+                    self.member_attribute: [
                         (
                             MODIFY_DELETE,
                             [member]
@@ -417,8 +410,8 @@ class LDAPService:
 
         entries = self.search(
             search_base=self.search_base,
-            search_filter=f"(ID={directory_id})",
-            attributes=["distinguishedName", "ID"],
+            search_filter=f"({self.user_id_attribute}={directory_id})",
+            attributes=["distinguishedName", self.user_id_attribute],
             size_limit=1,
         )
 
@@ -463,7 +456,7 @@ class LDAPService:
     ) -> str | None:
 
         entries = self.search(
-                search_filter=f"(uidNumber={uid})",
+                search_filter=f"({self.uid_attribute}={uid})",
                 attributes=["distinguishedName"],
                 size_limit=1,
             )
