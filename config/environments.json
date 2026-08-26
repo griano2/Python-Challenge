@@ -1,0 +1,40 @@
+[
+  {
+    "name": "LDS_TEST",
+    "env_type": "LDS",
+    "host": "evq.lds.slb.com",
+    "port": 636,
+    "use_ssl": true,
+    "search_base": "O=slb,C=an",
+    "group_filter_attribute": "alias",
+    "member_attribute": "uniqueMember",
+    "user_id_attribute": "ID",
+    "uid_attribute": "uidNumber",
+    "group_name_is_alias": true,
+    "secret_name": "challenge/ldscreds"
+  },
+  {
+    "name": "AD_DF2",
+    "env_type": "AD",
+    "host": "dir-tst.slb-tst.com",
+    "port": 636,
+    "use_ssl": true,
+    "search_base": "DC=dir-tst,DC=slb-tst,DC=com",
+    "group_filter_attribute": "cn",
+    "member_attribute": "member",
+    "user_id_attribute": "ID",
+    "uid_attribute": "uidNumber",
+    "group_name_is_alias": false,
+    "secret_name": "challenge/creds"
+  },
+  {
+    "name": "ENTRA_DF2",
+    "env_type": "ENTRA",
+    "tenant_id": "organizations",
+    "client_id": "14d82eec-204b-4c2f-b7e8-296a70dab67e",
+    "authority": "https://login.microsoftonline.com/organizations",
+    "graph_base_url": "https://graph.microsoft.com/v1.0",
+    "scopes": ["Group.ReadWrite.All"],
+    "secret_name": null
+  }
+]

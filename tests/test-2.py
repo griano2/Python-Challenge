@@ -1,4 +1,5 @@
 from services.ldap_service import LDAPService
+from services.service_factory import ServiceFactory
 
 GROUP_NAME = "Python-Test-Group-1"
 
@@ -10,7 +11,7 @@ USERS = [
 
 def run():
 
-    ldap = LDAPService()
+    ldap = ServiceFactory().get("AD_DF2")
 
     group_dn = ldap.get_group_dn(GROUP_NAME)
 
@@ -21,7 +22,7 @@ def run():
     users_to_remove = []
 
     for email in USERS:
-        user_dn = ldap.find_user_by_email(email)
+        user_dn = ldap.find_user_by_upn(email)
 
         if user_dn:
             users_to_remove.append(user_dn)
