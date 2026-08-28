@@ -43,6 +43,7 @@ class ServiceFactory:
                 authority=environment.authority,
                 graph_base_url=environment.graph_base_url,
                 scopes=environment.scopes,
+                secret_name=environment.secret_name,
             )
 
         raise ValueError(

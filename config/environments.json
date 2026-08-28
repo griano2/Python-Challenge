@@ -30,11 +30,11 @@
   {
     "name": "ENTRA_DF2",
     "env_type": "ENTRA",
-    "tenant_id": "organizations",
-    "client_id": "14d82eec-204b-4c2f-b7e8-296a70dab67e",
-    "authority": "https://login.microsoftonline.com/organizations",
+    "tenant_id": "29e24ee1-ce28-4d6c-9b84-3856f4568c5c",
+    "client_id": "b72a9dfb-3c95-467e-b93f-26462722f615",
+    "authority": "https://login.microsoftonline.com/29e24ee1-ce28-4d6c-9b84-3856f4568c5c",
     "graph_base_url": "https://graph.microsoft.com/v1.0",
-    "scopes": ["Group.ReadWrite.All"],
-    "secret_name": null
+    "scopes": ["https://graph.microsoft.com/.default"],
+    "secret_name": "challenge/entra-app"
   }
 ]
