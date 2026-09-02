@@ -25,7 +25,7 @@ class EntraIDService:
         if not secret_name:
             raise ValueError("Entra environment requires secret_name")
 
-        client_secret = VaultService().get_client_secret(secret_name)
+        client_secret = VaultService().get_secret(secret_name)
 
         self.app = msal.ConfidentialClientApplication(
             client_id=client_id,

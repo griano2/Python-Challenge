@@ -17,6 +17,7 @@ class LDAPService:
         user_id_attribute: str,
         uid_attribute: str,
         group_name_is_alias: bool,
+        bind_username: str,
         secret_name: str,
     ):
         self.group_filter_attribute = group_filter_attribute
@@ -24,12 +25,13 @@ class LDAPService:
         self.user_id_attribute = user_id_attribute
         self.uid_attribute = uid_attribute
         self.group_name_is_alias = group_name_is_alias
+        self.bind_username = bind_username
 
         vault = VaultService()
-        username, password = vault.get_creds(secret_name)
+        password = vault.get_secret(secret_name)
 
         server = self.make_server(host, port, use_ssl=use_ssl)
-        self.connection = self.bind(server, username, password)
+        self.connection = self.bind(server, bind_username, password)
         self.host = host
         self.port = port
         self.use_ssl = use_ssl

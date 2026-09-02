@@ -11,7 +11,8 @@
     "user_id_attribute": "ID",
     "uid_attribute": "uidNumber",
     "group_name_is_alias": true,
-    "secret_name": "challenge/ldscreds"
+    "bind_username": "GuermeurGroupManagem@slb.com",
+    "secret_name": "lds-cred"
   },
   {
     "name": "AD_DF2",
@@ -25,7 +26,8 @@
     "user_id_attribute": "ID",
     "uid_attribute": "uidNumber",
     "group_name_is_alias": false,
-    "secret_name": "challenge/creds"
+    "bind_username": "SVC-Python@slb-tst.com",
+    "secret_name": "ad-cred"
   },
   {
     "name": "ENTRA_DF2",
@@ -35,6 +37,6 @@
     "authority": "https://login.microsoftonline.com/29e24ee1-ce28-4d6c-9b84-3856f4568c5c",
     "graph_base_url": "https://graph.microsoft.com/v1.0",
     "scopes": ["https://graph.microsoft.com/.default"],
-    "secret_name": "challenge/entra-app"
+    "secret_name": "entra-cred"
   }
 ]
