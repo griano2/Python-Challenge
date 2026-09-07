@@ -30,7 +30,10 @@ class EntraIDService:
         # Filtrar o normalizar scopes para permisos delegados interactivos
         delegated_scopes = [s for s in (scopes or []) if not s.endswith("/.default")]
         if not delegated_scopes:
-            delegated_scopes = ["Group.ReadWrite.All", "User.Read"]
+            delegated_scopes = [
+                "Group.ReadWrite.All",
+                "User.Read",
+            ]
 
         self.token_cache = msal.SerializableTokenCache()
         if CACHE_FILE.exists():
