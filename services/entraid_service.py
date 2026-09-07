@@ -1,7 +1,7 @@
 import msal
 import requests
+from services.vault_service import VaultService
 from datetime import datetime, timezone, timedelta
-
 from utils.audit import audit_log
 from utils.logging_config import logger
 
@@ -15,6 +15,7 @@ class EntraIDService:
         authority: str,
         graph_base_url: str,
         scopes: list[str],
+        secret_name: str,
     ):
         if not authority:
             raise ValueError("Entra environment requires authority")
@@ -22,9 +23,14 @@ class EntraIDService:
             raise ValueError("Entra environment requires graph_base_url")
         if not scopes:
             raise ValueError("Entra environment requires scopes")
+        if not secret_name:
+            raise ValueError("Entra environment requires secret_name")
 
-        self.app = msal.PublicClientApplication(
+        client_secret = VaultService().get_secret(secret_name)
+
+        self.app = msal.ConfidentialClientApplication(
             client_id=client_id,
+            client_credential=client_secret,
             authority=authority,
         )
 
@@ -38,47 +44,26 @@ class EntraIDService:
 
     def _get_token(self) -> str:
 
-        accounts = self.app.get_accounts()
+        logger.debug("Requesting EntraID application token")
 
-        if accounts:
-
-            logger.debug(
-                "Attempting silent token acquisition"
-            )
-
-            result = self.app.acquire_token_silent(
-                scopes=self.scopes,
-                account=accounts[0],
-            )
-
-            if result and "access_token" in result:
-                logger.debug(
-                    "EntraID token acquired silently"
-                )
-                return result["access_token"]
-
-        logger.info(
-            "Starting interactive EntraID authentication"
-        )
-
-        result = self.app.acquire_token_interactive(
+        result = self.app.acquire_token_for_client(
             scopes=self.scopes,
         )
 
         if "access_token" not in result:
 
             logger.error(
-                "EntraID authentication failed | details=%s",
+                "EntraID application authentication failed | details=%s",
                 result.get("error_description")
             )
 
             raise Exception(
-                f"Auth failed: "
+                f"Application auth failed: "
                 f"{result.get('error_description')}"
             )
 
         logger.info(
-            "EntraID authentication successful"
+            "EntraID application authentication successful"
         )
 
         return result["access_token"]
@@ -372,4 +357,5 @@ class EntraIDService:
                 group_name,
                 exc_info=True,
             )
-            return None
+            return None
+    

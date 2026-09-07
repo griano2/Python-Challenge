@@ -163,12 +163,12 @@ All directory profiles are declared declaratively in [`config/environments.json`
   {
     "name": "ENTRA_DF2",
     "env_type": "ENTRA",
-    "tenant_id": "organizations",
-    "client_id": "14d82eec-204b-4c2f-b7e8-296a70dab67e",
-    "authority": "https://login.microsoftonline.com/organizations",
+    "tenant_id": "29e24ee1-ce28-4d6c-9b84-3856f4568c5c",
+    "client_id": "b72a9dfb-3c95-467e-b93f-26462722f615",
+    "authority": "https://login.microsoftonline.com/29e24ee1-ce28-4d6c-9b84-3856f4568c5c",
     "graph_base_url": "https://graph.microsoft.com/v1.0",
-    "scopes": ["Group.ReadWrite.All"],
-    "secret_name": null
+    "scopes": ["https://graph.microsoft.com/.default"],
+    "secret_name": "challenge/entra-app"
   }
 ]
 ```
@@ -209,13 +209,13 @@ All directory profiles are declared declaratively in [`config/environments.json`
 
 - **Role**: Microsoft 365 / Cloud Azure Active Directory.
 - **Protocol**: HTTPS REST over Microsoft Graph API v1.0 (`https://graph.microsoft.com/v1.0`).
-- **Authority**: `https://login.microsoftonline.com/organizations`
-- **Client ID**: `14d82eec-204b-4c2f-b7e8-296a70dab67e`
-- **OAuth2 Scopes**: `["Group.ReadWrite.All"]`
+- **Authority**: `https://login.microsoftonline.com/29e24ee1-ce28-4d6c-9b84-3856f4568c5c`
+- **Client ID**: `b72a9dfb-3c95-467e-b93f-26462722f615`
+- **OAuth2 Scope**: `["https://graph.microsoft.com/.default"]`
 - **Authentication Flow**:
-  - Handled via `msal.PublicClientApplication`.
-  - Attempts silent token acquisition (`acquire_token_silent`) using local token cache.
-  - Falls back to interactive browser authentication (`acquire_token_interactive`) when required.
+  - Handled via `msal.ConfidentialClientApplication`.
+  - Obtains an application token with `acquire_token_for_client`; no user login or browser interaction is used.
+  - The client secret is read from Vault path `challenge/entra-app` as the `password` field.
 - **Pagination Support**: Automatically follows `@odata.nextLink` to retrieve large group rosters beyond the 999-entry page limit.
 - **Driver**: [`EntraIDService`](services/entraid_service.py).
 
@@ -259,8 +259,9 @@ The framework enforces strict zero-hardcoded secrets practices. Connection passw
 │                     (http://127.0.0.1:8200)                       │
 │                                                                   │
 │                KV v2 Engine (mount: "secret/")                    │
-│                ├── challenge/creds     ──► (AD Credentials)       │
-│                └── challenge/ldscreds  ──► (LDS Credentials)      │
+│                ├── challenge/creds      ──► (AD Credentials)      │
+│                ├── challenge/ldscreds   ──► (LDS Credentials)     │
+│                └── challenge/entra-app  ──► (Graph App Secret)    │
 └───────────────────────────────────────────────────────────────────┘
 ```
 
@@ -272,13 +273,14 @@ The [`VaultService`](services/vault_service.py) class leverages the `hvac` Pytho
 2. **Fail-Fast Validation**: Executes `client.is_authenticated()`. If authentication fails or the token is missing, an exception is raised immediately to prevent unauthenticated LDAP binds.
 3. **Secret Retrieval**:
    - `get_creds(secret_path: str) -> tuple[str, str]`: Generic method that fetches `username` and `password` from any specified path in the `secret` KV v2 mount.
+  - `get_client_secret(secret_path: str) -> str`: Reads the `password` field used as the Entra application client secret.
    - `get_ad_creds() -> tuple[str, str]`: Shortcut targeting `challenge/creds`.
    - `get_lds_creds() -> tuple[str, str]`: Shortcut targeting `challenge/ldscreds`.
 
 ### Security Principles
 
 - **No Plaintext Passwords in Git**: Neither `environments.json` nor any Python file contains directory passwords.
-- **In-Memory Lifetimes**: Credentials are read at runtime during service instantiation and passed directly into the secure TLS LDAP bind context.
+- **In-Memory Lifetimes**: Directory credentials and the Graph client secret are read at runtime from Vault.
 - **Least Privilege Access**: Directory accounts require only the necessary read permissions and write access scoped to managed target groups.
 
 ---

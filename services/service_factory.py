@@ -32,6 +32,7 @@ class ServiceFactory:
                 user_id_attribute=environment.user_id_attribute,
                 uid_attribute=environment.uid_attribute,
                 group_name_is_alias=environment.group_name_is_alias,
+                bind_username=environment.bind_username,
                 secret_name=environment.secret_name,
             )
 
@@ -43,6 +44,7 @@ class ServiceFactory:
                 authority=environment.authority,
                 graph_base_url=environment.graph_base_url,
                 scopes=environment.scopes,
+                secret_name=environment.secret_name,
             )
 
         raise ValueError(
