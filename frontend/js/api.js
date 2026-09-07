@@ -23,6 +23,11 @@ async function apiFetch(path, options = {}) {
 }
 
 const API = {
+  // ── Authentication ──────────────────────────────────────────────────────
+  getAuthStatus:        () => apiFetch('/api/auth/status'),
+  loginMicrosoft:       () => apiFetch('/api/auth/login', { method: 'POST' }),
+  logout:               () => apiFetch('/api/auth/logout', { method: 'POST' }),
+
   // ── Directories ─────────────────────────────────────────────────────────
   getDirectories:       () => apiFetch('/api/directories'),
   createDirectory: (payload) => apiFetch('/api/directories', { method: 'POST', body: JSON.stringify(payload) }),

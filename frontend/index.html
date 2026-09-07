@@ -7,7 +7,28 @@
   <meta name="description" content="Web interface for managing LDAP, Active Directory, and Entra ID group synchronization pairs.">
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
-<body>
+<!-- ── Mandatory Login Screen ────────────────────────────────────────── -->
+<div id="login-screen" class="login-screen hidden">
+  <div class="login-card">
+    <div class="login-badge">Acceso Requerido</div>
+    <div class="login-icon">🔄</div>
+    <h2 class="login-title">Group Sync Manager</h2>
+    <p class="login-subtitle">Inicia sesión con tu cuenta corporativa de Microsoft para gestionar directorios y autorizar sincronizaciones.</p>
+    
+    <button class="btn-microsoft" id="btn-ms-login" onclick="loginWithMicrosoft()">
+      <svg class="ms-logo" width="20" height="20" viewBox="0 0 21 21">
+        <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+        <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+        <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+        <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+      </svg>
+      <span id="btn-ms-text">Iniciar sesión con Microsoft</span>
+    </button>
+    <div class="login-hint">
+      <span>🔒 Autenticación delegada segura vía Microsoft Entra ID</span>
+    </div>
+  </div>
+</div>
 
 <div id="app">
 
@@ -18,6 +39,13 @@
       <h1><span>Sync Manager</span></h1>
     </div>
     <div class="header-spacer"></div>
+    <div class="header-user" id="header-user" style="display: none;">
+      <div class="user-info">
+        <span class="user-avatar" id="user-avatar">👤</span>
+        <span class="user-name" id="user-display-name">Usuario</span>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="logout()" title="Cerrar sesión">Salir</button>
+    </div>
   </header>
 
   <!-- ── Main body ───────────────────────────────────────────────────────── -->

@@ -1,9 +1,14 @@
+import os
+from pathlib import Path
+from typing import Optional
 import msal
 import requests
-from services.vault_service import VaultService
 from datetime import datetime, timezone, timedelta
 from utils.audit import audit_log
 from utils.logging_config import logger
+
+CACHE_DIR = Path(__file__).parent.parent / "config"
+CACHE_FILE = CACHE_DIR / ".entra_token_cache.bin"
 
 
 class EntraIDService:
@@ -15,57 +20,82 @@ class EntraIDService:
         authority: str,
         graph_base_url: str,
         scopes: list[str],
-        secret_name: str,
+        secret_name: Optional[str] = None,
     ):
         if not authority:
             raise ValueError("Entra directory requires authority")
         if not graph_base_url:
             raise ValueError("Entra directory requires graph_base_url")
-        if not scopes:
-            raise ValueError("Entra directory requires scopes")
-        if not secret_name:
-            raise ValueError("Entra directory requires secret_name")
 
-        client_secret = VaultService().get_secret(secret_name)
+        # Filtrar o normalizar scopes para permisos delegados interactivos
+        delegated_scopes = [s for s in (scopes or []) if not s.endswith("/.default")]
+        if not delegated_scopes:
+            delegated_scopes = ["Group.ReadWrite.All", "User.Read"]
 
-        self.app = msal.ConfidentialClientApplication(
+        self.token_cache = msal.SerializableTokenCache()
+        if CACHE_FILE.exists():
+            try:
+                self.token_cache.deserialize(CACHE_FILE.read_text(encoding="utf-8"))
+            except Exception as e:
+                logger.warning("No se pudo cargar la caché de tokens de Entra: %s", e)
+
+        self.app = msal.PublicClientApplication(
             client_id=client_id,
-            client_credential=client_secret,
             authority=authority,
+            token_cache=self.token_cache,
         )
 
         self.base_url = graph_base_url.rstrip("/")
-        self.scopes = scopes
+        self.scopes = delegated_scopes
 
         logger.info(
-            "EntraIDService initialized | tenant=%s",
+            "EntraIDService initialized (Interactive / Delegated) | tenant=%s",
             tenant_id
         )
 
+    def _save_cache(self) -> None:
+        if self.token_cache.has_state_changed:
+            try:
+                CACHE_FILE.write_text(self.token_cache.serialize(), encoding="utf-8")
+            except Exception as e:
+                logger.warning("No se pudo guardar la caché de tokens de Entra: %s", e)
+
     def _get_token(self) -> str:
+        # 1. Intentar obtención silenciosa desde la caché
+        accounts = self.app.get_accounts()
+        if accounts:
+            logger.debug("Intentando obtención silenciosa de token para %s", accounts[0].get("username"))
+            result = self.app.acquire_token_silent(
+                scopes=self.scopes,
+                account=accounts[0],
+            )
+            if result and "access_token" in result:
+                self._save_cache()
+                return result["access_token"]
 
-        logger.debug("Requesting EntraID application token")
+        # 2. Flujo interactivo: abre el navegador con la pantalla oficial de Microsoft
+        logger.info("Abriendo ventana de navegador para inicio de sesión en Microsoft...")
+        print("\n" + "=" * 70)
+        print(">>> INICIANDO SESIÓN EN MICROSOFT: Por favor completa el login en la")
+        print(">>> ventana del navegador que se acaba de abrir.")
+        print("=" * 70 + "\n")
 
-        result = self.app.acquire_token_for_client(
+        result = self.app.acquire_token_interactive(
             scopes=self.scopes,
+            prompt="select_account",
         )
 
         if "access_token" not in result:
-
             logger.error(
-                "EntraID application authentication failed | details=%s",
+                "Error en autenticación interactiva de Entra ID | detalles=%s",
                 result.get("error_description")
             )
-
             raise Exception(
-                f"Application auth failed: "
-                f"{result.get('error_description')}"
+                f"Error al autenticar con Microsoft: {result.get('error_description')}"
             )
 
-        logger.info(
-            "EntraID application authentication successful"
-        )
-
+        self._save_cache()
+        logger.info("Autenticación con Microsoft exitosa")
         return result["access_token"]
 
     def _get_headers(self) -> dict:
@@ -77,11 +107,8 @@ class EntraIDService:
     def _raise_for_graph_response(self, response) -> None:
         if response.status_code in (401, 403):
             raise PermissionError(
-                "Microsoft Graph rejected the application token with "
-                f"HTTP {response.status_code}. Grant the app the application "
-                "permissions Group.Read.All and GroupMember.Read.All, "
-                "then grant admin consent. Add GroupMember.ReadWrite.All "
-                "for membership changes."
+                f"Microsoft Graph rechazó la solicitud con HTTP {response.status_code}. "
+                f"Detalle: {response.text}"
             )
 
         response.raise_for_status()

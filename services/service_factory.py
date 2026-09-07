@@ -1,6 +1,5 @@
 from repositories.directory_repository import DirectoryRepository
-from services.ldap_service import LDAPService
-from services.entraid_service import EntraIDService
+
 
 class ServiceFactory:
 
@@ -22,6 +21,7 @@ class ServiceFactory:
 
     def _create_service(self, directory):
         if directory.dir_type in {"AD", "LDS", "LDAP"}:
+            from services.ldap_service import LDAPService
             return LDAPService(
                 host=directory.host,
                 port=directory.port,
@@ -37,7 +37,7 @@ class ServiceFactory:
             )
 
         elif directory.dir_type == "ENTRA":
-
+            from services.entraid_service import EntraIDService
             return EntraIDService(
                 tenant_id=directory.tenant_id,
                 client_id=directory.client_id,
