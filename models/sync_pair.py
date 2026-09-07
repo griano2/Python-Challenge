@@ -5,10 +5,10 @@ from dataclasses import dataclass
 class SyncPair:
     name: str
 
-    source_environment: str
+    source_directory: str
     source_group: str
 
-    target_environment: str
+    target_directory: str
     target_group: str
 
     direction: str

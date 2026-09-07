@@ -23,11 +23,11 @@ async function apiFetch(path, options = {}) {
 }
 
 const API = {
-  // ── Environments ────────────────────────────────────────────────────────
-  getEnvironments:       () => apiFetch('/api/environments'),
-  createEnvironment: (payload) => apiFetch('/api/environments', { method: 'POST', body: JSON.stringify(payload) }),
-  updateEnvironment: (name, payload) => apiFetch(`/api/environments/${encodeURIComponent(name)}`, { method: 'PUT', body: JSON.stringify(payload) }),
-  deleteEnvironment: (name) => apiFetch(`/api/environments/${encodeURIComponent(name)}`, { method: 'DELETE' }),
+  // ── Directories ─────────────────────────────────────────────────────────
+  getDirectories:       () => apiFetch('/api/directories'),
+  createDirectory: (payload) => apiFetch('/api/directories', { method: 'POST', body: JSON.stringify(payload) }),
+  updateDirectory: (name, payload) => apiFetch(`/api/directories/${encodeURIComponent(name)}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteDirectory: (name) => apiFetch(`/api/directories/${encodeURIComponent(name)}`, { method: 'DELETE' }),
 
   // ── Sync Pairs ──────────────────────────────────────────────────────────
   getSyncPairs:          () => apiFetch('/api/sync-pairs'),

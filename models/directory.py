@@ -3,10 +3,10 @@ from typing import Optional
 
 
 @dataclass
-class Environment:
+class Directory:
 
     name: str
-    env_type: str
+    dir_type: str
     display_name: Optional[str] = None
 
     enabled: bool = True

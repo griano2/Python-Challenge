@@ -12,33 +12,33 @@ repo = SyncPairRepository()
 
 def _build_engine():
     """Instantiate a fresh SyncEngine reading current config (deferred imports)."""
-    from repositories.environment_repository import EnvironmentRepository
+    from repositories.directory_repository import DirectoryRepository
     from services.service_factory import ServiceFactory
     from services.sync_engine import SyncEngine
     from services.sync_service import SyncService
 
-    env_repo = EnvironmentRepository()
-    envs = {e.name: e for e in env_repo.get_all()}
+    dir_repo = DirectoryRepository()
+    dirs = {d.name: d for d in dir_repo.get_all()}
 
     factory = ServiceFactory()
 
-    ldap_env  = (
-        next((e for e in envs.values() if e.env_type == "AD"), None)
-        or next((e for e in envs.values() if e.env_type == "LDAP"), None)
+    ldap_dir = (
+        next((d for d in dirs.values() if d.dir_type == "AD"), None)
+        or next((d for d in dirs.values() if d.dir_type == "LDAP"), None)
     )
-    entra_env = next((e for e in envs.values() if e.env_type == "ENTRA"), None)
-    evq_env   = next((e for e in envs.values() if e.env_type == "LDS"), None)
+    entra_dir = next((d for d in dirs.values() if d.dir_type == "ENTRA"), None)
+    evq_dir   = next((d for d in dirs.values() if d.dir_type == "LDS"), None)
 
-    ldap_svc  = factory.get(ldap_env.name)  if ldap_env  else None
-    entra_svc = factory.get(entra_env.name) if entra_env else None
-    evq_svc   = factory.get(evq_env.name)   if evq_env   else None
+    ldap_svc  = factory.get(ldap_dir.name)  if ldap_dir  else None
+    entra_svc = factory.get(entra_dir.name) if entra_dir else None
+    evq_svc   = factory.get(evq_dir.name)   if evq_dir   else None
 
     sync_svc = SyncService(
         ldap_service=ldap_svc,
         entraid_service=entra_svc,
         evq_service=evq_svc,
     )
-    # Pass factory so SyncEngine can resolve any environment for change detection
+    # Pass factory so SyncEngine can resolve any directory for change detection
     return SyncEngine(sync_svc, factory=factory)
 
 

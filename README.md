@@ -11,7 +11,7 @@ A robust, enterprise-grade identity and group synchronization platform built in 
   - [Design Patterns & Principles](#design-patterns--principles)
   - [Directory Synchronization Flow](#directory-synchronization-flow)
 - [2. Service Profiles & Directory Connections](#2-service-profiles--directory-connections)
-  - [Environment Configuration (`config/environments.json`)](#environment-configuration-configenvironmentsjson)
+  - [Directory Configuration (`config/directories.json`)](#directory-configuration-configdirectoriesjson)
   - [Profile 1: Active Directory (`AD_DF2`)](#profile-1-active-directory-ad_df2)
   - [Profile 2: Lightweight Directory Services (`LDS_TEST`)](#profile-2-lightweight-directory-services-lds_test)
   - [Profile 3: Microsoft Entra ID (`ENTRA_DF2`)](#profile-3-microsoft-entra-id-entra_df2)
@@ -50,8 +50,9 @@ The system follows a clean, decoupled multi-tiered architecture separating confi
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
 │                                   CONFIGURATION LAYER                                   │
 │   ┌─────────────────────────────────────────┐   ┌───────────────────────────────────┐   │
-│   │         config/environments.json        │   │        config/sync_pairs.json     │   │
-│   └────────────────────┬────────────────────┘   └─────────────────┬─────────────────┘   │
+│   │         config/directories.json         │   │        config/sync_pairs.json     │   │
+│   │           (Directory Configs)           │   │       (Sync Pair Definitions)     │   │
+│   └────────────────────┬────────────────────┘   └────────────────────┬──────────────┘   │
 └────────────────────────┼──────────────────────────────────────────┼─────────────────────┘
                          │                                          │
                          ▼                                          ▼
@@ -90,8 +91,8 @@ The system follows a clean, decoupled multi-tiered architecture separating confi
 
 ### Design Patterns & Principles
 
-1. **Repository Pattern** ([`EnvironmentRepository`](repositories/environment_repository.py), [`SyncPairRepository`](repositories/sync_pair_repository.py)): Decouples JSON configuration storage from in-memory domain objects.
-2. **Factory & Registry Pattern** ([`ServiceFactory`](services/service_factory.py)): Dynamically creates and caches directory connectors (`LDAPService` or `EntraIDService`) based on environment types and properties.
+1. **Repository Pattern** ([`DirectoryRepository`](repositories/directory_repository.py), [`SyncPairRepository`](repositories/sync_pair_repository.py)): Decouples JSON configuration storage from in-memory domain objects.
+2. **Factory & Registry Pattern** ([`ServiceFactory`](services/service_factory.py)): Dynamically creates and caches directory connectors (`LDAPService` or `EntraIDService`) based on directory types and properties.
 3. **Engine & Strategy Pattern** ([`SyncEngine`](services/sync_engine.py), [`SyncService`](services/sync_service.py)): Decouples sync orchestration and configuration loop from directory-specific translation strategies (`AD_TO_AD`, `ENTRA_TO_AD`, `AD_TO_ENTRA`, `AD_TO_LDS`, `LDS_TO_AD`).
 4. **Zero-Hardcoded Secrets**: Credential management is delegated to HashiCorp Vault via [`VaultService`](services/vault_service.py).
 5. **Idempotence & Delta Calculation**: Synchronization operations compute mathematical set differences (`Source \ Target` and `Target \ Source`) to issue minimal additive and subtractive changes.
@@ -126,15 +127,15 @@ The system follows a clean, decoupled multi-tiered architecture separating confi
 
 ## 2. Service Profiles & Directory Connections
 
-All directory profiles are declared declaratively in [`config/environments.json`](config/environments.json) and parsed into strongly-typed [`Environment`](models/environment.py) dataclasses.
+All directory profiles are declared declaratively in [`config/directories.json`](config/directories.json) and parsed into strongly-typed [`Directory`](models/directory.py) dataclasses.
 
-### Environment Configuration (`config/environments.json`)
+### Directory Configuration (`config/directories.json`)
 
 ```json
 [
   {
     "name": "LDS_TEST",
-    "env_type": "LDS",
+    "dir_type": "LDS",
     "host": "evq.lds.slb.com",
     "port": 636,
     "use_ssl": true,
@@ -148,7 +149,7 @@ All directory profiles are declared declaratively in [`config/environments.json`
   },
   {
     "name": "AD_DF2",
-    "env_type": "AD",
+    "dir_type": "AD",
     "host": "dir-tst.slb-tst.com",
     "port": 636,
     "use_ssl": true,
@@ -162,7 +163,7 @@ All directory profiles are declared declaratively in [`config/environments.json`
   },
   {
     "name": "ENTRA_DF2",
-    "env_type": "ENTRA",
+    "dir_type": "ENTRA",
     "tenant_id": "29e24ee1-ce28-4d6c-9b84-3856f4568c5c",
     "client_id": "b72a9dfb-3c95-467e-b93f-26462722f615",
     "authority": "https://login.microsoftonline.com/29e24ee1-ce28-4d6c-9b84-3856f4568c5c",
@@ -303,45 +304,45 @@ Group synchronization jobs are defined declaratively in [`config/sync_pairs.json
 [
   {
     "name": "Python Test Group Sync AD to AD",
-    "source_environment": "AD_DF2",
+    "source_directory": "AD_DF2",
     "source_group": "Python-Test-Group-1",
-    "target_environment": "AD_DF2",
+    "target_directory": "AD_DF2",
     "target_group": "Python-Test-Group-2",
     "direction": "AD_TO_AD",
     "enabled": true
   },
   {
     "name": "Python Test Group Sync Entra to AD",
-    "source_environment": "ENTRA_DF2",
+    "source_directory": "ENTRA_DF2",
     "source_group": "Python-Test-Group-3",
-    "target_environment": "AD_DF2",
+    "target_directory": "AD_DF2",
     "target_group": "Python-Test-Group-4",
     "direction": "ENTRA_TO_AD",
     "enabled": true
   },
   {
     "name": "Python Test Group Sync AD to Entra",
-    "source_environment": "ENTRA_DF2",
+    "source_directory": "ENTRA_DF2",
     "source_group": "Python-Test-Group-4",
-    "target_environment": "AD_DF2",
+    "target_directory": "AD_DF2",
     "target_group": "Python-Test-Group-3",
     "direction": "AD_TO_ENTRA",
     "enabled": false
   },
   {
     "name": "Python Test Group Sync AD to LDS",
-    "source_environment": "AD_DF2",
+    "source_directory": "AD_DF2",
     "source_group": "Python-Test-Group-5",
-    "target_environment": "LDS_TEST",
+    "target_directory": "LDS_TEST",
     "target_group": "Other_Python-Test-Group-6",
     "direction": "AD_TO_LDS",
     "enabled": true
   },
   {
     "name": "Python Test Group Sync LDS to AD",
-    "source_environment": "LDS_TEST",
+    "source_directory": "LDS_TEST",
     "source_group": "Other_Python-Test-Group-6",
-    "target_environment": "AD_DF2",
+    "target_directory": "AD_DF2",
     "target_group": "Python-Test-Group-5",
     "direction": "LDS_TO_AD",
     "enabled": false
@@ -396,13 +397,13 @@ To maintain performance, avoid unnecessary directory writes, and minimize audit 
 ```
 Python-Challenge/
 ├── config/
-│   ├── environments.json              # Directory connection & auth profiles
+│   ├── directories.json               # Directory connection & auth profiles
 │   └── sync_pairs.json                # Group synchronization configurations
 ├── models/
-│   ├── environment.py                 # Environment dataclass model
+│   ├── directory.py                   # Directory dataclass model
 │   └── sync_pair.py                   # SyncPair dataclass model
 ├── repositories/
-│   ├── environment_repository.py      # Repository for environment profiles
+│   ├── directory_repository.py        # Repository for directory profiles
 │   └── sync_pair_repository.py        # Repository for sync pair configurations
 ├── services/
 │   ├── entraid_service.py             # Microsoft Entra ID / Graph API connector
@@ -482,7 +483,7 @@ HashiCorp Vault integration manager.
 - Methods: `get_creds(path)`, `get_ad_creds()`, `get_lds_creds()`.
 
 #### [`services/service_factory.py`](services/service_factory.py)
-Factory and instance registry. Reads [`Environment`](models/environment.py) configuration, instantiates appropriate `LDAPService` or `EntraIDService` connectors, and caches them to prevent redundant network binds.
+Factory and instance registry. Reads [`Directory`](models/directory.py) configuration, instantiates appropriate `LDAPService` or `EntraIDService` connectors, and caches them to prevent redundant network binds.
 
 #### [`services/sync_service.py`](services/sync_service.py)
 Core business logic implementing directory synchronization routines:
@@ -499,14 +500,14 @@ Batch synchronization coordinator. Iterates over enabled sync pairs from `SyncPa
 
 ### Domain Models (`models/`)
 
-- [`models/environment.py`](models/environment.py): Data class encapsulating directory connection settings (`host`, `port`, `use_ssl`, `search_base`, `group_filter_attribute`, `member_attribute`, `tenant_id`, `client_id`, `authority`, `secret_name`, etc.).
-- [`models/sync_pair.py`](models/sync_pair.py): Data class defining a synchronization relationship (`name`, `source_environment`, `source_group`, `target_environment`, `target_group`, `direction`, `enabled`).
+- [`models/directory.py`](models/directory.py): Data class encapsulating directory connection settings (`host`, `port`, `use_ssl`, `search_base`, `group_filter_attribute`, `member_attribute`, `tenant_id`, `client_id`, `authority`, `secret_name`, etc.).
+- [`models/sync_pair.py`](models/sync_pair.py): Data class defining a synchronization relationship (`name`, `source_directory`, `source_group`, `target_directory`, `target_group`, `direction`, `enabled`).
 
 ---
 
 ### Data Access Repositories (`repositories/`)
 
-- [`repositories/environment_repository.py`](repositories/environment_repository.py): Reads `config/environments.json` and supplies `get_all()` and `get(name)` methods returning `Environment` instances.
+- [`repositories/directory_repository.py`](repositories/directory_repository.py): Reads `config/directories.json` and supplies `get_all()` and `get(name)` methods returning `Directory` instances.
 - [`repositories/sync_pair_repository.py`](repositories/sync_pair_repository.py): Reads `config/sync_pairs.json` and supplies `get_all()`, `get_enabled()`, and `get_by_name(name)` methods returning `SyncPair` instances.
 
 ---

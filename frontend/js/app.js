@@ -47,7 +47,7 @@ async function initApp() {
 
   // Load initial data
   try {
-    await Promise.all([loadSyncPairs(), loadEnvironments()]);
+    await Promise.all([loadSyncPairs(), loadDirectories()]);
   } catch (e) {
     showToast('error', 'Error al cargar datos', e.message);
   }

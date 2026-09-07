@@ -30,9 +30,9 @@
         <span class="nav-icon">🔀</span>
         <span>Sync Pairs</span>
       </div>
-      <div class="nav-item" data-section="environments">
+      <div class="nav-item" data-section="directories">
         <span class="nav-icon">🌐</span>
-        <span>Environments</span>
+        <span>Directories</span>
       </div>
     </nav>
 
@@ -73,20 +73,20 @@
         </div>
       </section>
 
-      <!-- ══ Environments Section ══════════════════════════════════════════ -->
-      <section class="section" id="section-environments">
+      <!-- ══ Directories Section ════════════════════════════════════════════ -->
+      <section class="section" id="section-directories">
         <div class="page-header">
           <div class="page-title">
-            Environments
+            Directories
             <small>Configuración de conexiones LDAP, AD y Entra ID</small>
           </div>
           <div class="page-actions">
-            <button class="btn btn-primary" onclick="openNewEnvModal()">+ Nuevo environment</button>
+            <button class="btn btn-primary" onclick="openNewDirModal()">+ Nuevo directory</button>
           </div>
         </div>
 
         <div class="table-wrapper">
-          <table id="envs-table">
+          <table id="dirs-table">
             <thead>
               <tr>
                 <th>Nombre</th>
@@ -122,17 +122,17 @@
   </div>
 </div>
 
-<!-- ══ Environment Modal ════════════════════════════════════════════════════ -->
-<div class="modal-overlay" id="env-modal">
+<!-- ══ Directory Modal ══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="dir-modal">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title" id="env-modal-title">Environment</span>
-      <button class="modal-close" onclick="closeEnvModal()">×</button>
+      <span class="modal-title" id="dir-modal-title">Directory</span>
+      <button class="modal-close" onclick="closeDirModal()">×</button>
     </div>
-    <div class="modal-body" id="env-modal-body"></div>
+    <div class="modal-body" id="dir-modal-body"></div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeEnvModal()">Cancelar</button>
-      <button class="btn btn-primary" id="env-modal-save">Guardar</button>
+      <button class="btn btn-secondary" onclick="closeDirModal()">Cancelar</button>
+      <button class="btn btn-primary" id="dir-modal-save">Guardar</button>
     </div>
   </div>
 </div>
@@ -143,7 +143,7 @@
 <!-- ══ Scripts ══════════════════════════════════════════════════════════════ -->
 <script src="/static/js/api.js"></script>
 <script src="/static/js/sync_pairs.js"></script>
-<script src="/static/js/environments.js"></script>
+<script src="/static/js/directories.js"></script>
 <script src="/static/js/app.js"></script>
 
 </body>

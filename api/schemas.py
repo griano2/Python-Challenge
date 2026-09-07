@@ -2,9 +2,9 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class EnvironmentPayload(BaseModel):
+class DirectoryPayload(BaseModel):
     name: str
-    env_type: str
+    dir_type: str
     display_name: Optional[str] = None
     enabled: bool = True
 
@@ -31,9 +31,9 @@ class EnvironmentPayload(BaseModel):
 
 class SyncPairPayload(BaseModel):
     name: str
-    source_environment: str
+    source_directory: str
     source_group: str
-    target_environment: str
+    target_directory: str
     target_group: str
     direction: str
     enabled: bool = True

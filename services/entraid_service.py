@@ -18,13 +18,13 @@ class EntraIDService:
         secret_name: str,
     ):
         if not authority:
-            raise ValueError("Entra environment requires authority")
+            raise ValueError("Entra directory requires authority")
         if not graph_base_url:
-            raise ValueError("Entra environment requires graph_base_url")
+            raise ValueError("Entra directory requires graph_base_url")
         if not scopes:
-            raise ValueError("Entra environment requires scopes")
+            raise ValueError("Entra directory requires scopes")
         if not secret_name:
-            raise ValueError("Entra environment requires secret_name")
+            raise ValueError("Entra directory requires secret_name")
 
         client_secret = VaultService().get_secret(secret_name)
 

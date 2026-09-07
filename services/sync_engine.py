@@ -13,7 +13,7 @@ class SyncEngine:
         Args:
             sync_service: Business-logic service that performs the actual sync.
             factory:      Optional ServiceFactory used to look up individual
-                          services by environment name for change detection.
+                          services by directory name for change detection.
                           When None, the skip-if-unchanged check is disabled
                           and every enabled pair always runs.
         """
@@ -72,10 +72,10 @@ class SyncEngine:
             return False
 
         source_mtime = self._get_modified_time(
-            pair.source_environment, pair.source_group
+            pair.source_directory, pair.source_group
         )
         target_mtime = self._get_modified_time(
-            pair.target_environment, pair.target_group
+            pair.target_directory, pair.target_group
         )
 
         if source_mtime is None or target_mtime is None:
@@ -103,16 +103,16 @@ class SyncEngine:
         return source_unchanged and target_unchanged
 
     def _get_modified_time(
-        self, environment_name: str, group_name: str
+        self, directory_name: str, group_name: str
     ) -> Optional[datetime]:
         """Retrieve group modified time from the appropriate service."""
         try:
-            service = self.factory.get(environment_name)
+            service = self.factory.get(directory_name)
             return service.get_group_modified_time(group_name)
         except Exception:
             logger.warning(
-                "Could not get modified time | env=%s | group=%s",
-                environment_name,
+                "Could not get modified time | dir=%s | group=%s",
+                directory_name,
                 group_name,
                 exc_info=True,
             )

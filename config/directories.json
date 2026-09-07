@@ -1,7 +1,7 @@
 [
   {
     "name": "LDS_TEST",
-    "env_type": "LDS",
+    "dir_type": "LDS",
     "host": "evq.lds.slb.com",
     "port": 636,
     "use_ssl": true,
@@ -16,7 +16,7 @@
   },
   {
     "name": "AD_DF2",
-    "env_type": "AD",
+    "dir_type": "AD",
     "host": "dir-tst.slb-tst.com",
     "port": 636,
     "use_ssl": true,
@@ -31,7 +31,7 @@
   },
   {
     "name": "ENTRA_DF2",
-    "env_type": "ENTRA",
+    "dir_type": "ENTRA",
     "tenant_id": "29e24ee1-ce28-4d6c-9b84-3856f4568c5c",
     "client_id": "b72a9dfb-3c95-467e-b93f-26462722f615",
     "authority": "https://login.microsoftonline.com/29e24ee1-ce28-4d6c-9b84-3856f4568c5c",
