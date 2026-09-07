@@ -1,5 +1,7 @@
 import msal
 import requests
+from datetime import datetime, timezone, timedelta
+
 from utils.audit import audit_log
 from utils.logging_config import logger
 
@@ -326,4 +328,48 @@ class EntraIDService:
 
         return not failed
 
-    
+    def get_group_modified_time(self, group_name: str) -> datetime | None:
+        """Return the UTC datetime of the last modification of a group in Entra ID.
+
+        Queries ``lastModifiedDateTime`` via the Graph API.
+        Returns ``None`` if the group is not found or the call fails,
+        so the caller defaults to running the sync.
+        """
+        try:
+            params = {
+                "$filter": f"displayName eq '{group_name}'",
+                "$select": "id,displayName,lastModifiedDateTime",
+            }
+
+            resp = requests.get(
+                f"{self.base_url}/groups",
+                headers=self._get_headers(),
+                params=params,
+            )
+            resp.raise_for_status()
+
+            groups = resp.json().get("value", [])
+
+            if not groups:
+                logger.warning(
+                    "get_group_modified_time: group not found | group=%s",
+                    group_name,
+                )
+                return None
+
+            raw_ts = groups[0].get("lastModifiedDateTime")
+
+            if not raw_ts:
+                return None
+
+            # Graph API returns ISO 8601: "2026-09-07T13:30:00Z"
+            dt = datetime.fromisoformat(raw_ts.replace("Z", "+00:00"))
+            return dt
+
+        except Exception:
+            logger.warning(
+                "get_group_modified_time: could not retrieve lastModifiedDateTime | group=%s",
+                group_name,
+                exc_info=True,
+            )
+            return None

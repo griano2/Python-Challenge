@@ -35,7 +35,9 @@ def _build_engine():
         entraid_service=entra_svc,
         evq_service=evq_svc,
     )
-    return SyncEngine(sync_svc)
+    # Pass factory so SyncEngine can resolve any environment for change detection
+    return SyncEngine(sync_svc, factory=factory)
+
 
 
 @router.get("")

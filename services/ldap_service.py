@@ -1,8 +1,11 @@
+from datetime import datetime, timezone
+
 from ldap3 import Connection, Server, Tls, MODIFY_ADD, MODIFY_DELETE, SUBTREE
 from utils.audit import audit_log
 from utils.logging_config import logger
 from services.vault_service import VaultService
 import ssl
+
 
 class LDAPService:
 
@@ -477,3 +480,54 @@ class LDAPService:
         )
 
         return user.entry_dn
+
+    def get_group_modified_time(self, group_name: str) -> datetime | None:
+        """Return the UTC datetime of the last modification of a group.
+
+        Uses the ``whenChanged`` operational attribute available in AD and LDS.
+        Returns ``None`` if the attribute is absent or cannot be parsed,
+        so the caller can default to running the sync.
+        """
+        try:
+            entries = self.search(
+                search_filter=f"({self.group_filter_attribute}={group_name})",
+                attributes=["whenChanged"],
+                size_limit=1,
+            )
+
+            if not entries:
+                logger.warning(
+                    "get_group_modified_time: group not found | group=%s",
+                    group_name,
+                )
+                return None
+
+            entry = entries[0]
+
+            when_changed = entry["whenChanged"].value if "whenChanged" in entry else None
+
+            if when_changed is None:
+                logger.warning(
+                    "get_group_modified_time: whenChanged not present | group=%s",
+                    group_name,
+                )
+                return None
+
+            # ldap3 returns whenChanged as a datetime; ensure it is UTC-aware.
+            if isinstance(when_changed, datetime):
+                if when_changed.tzinfo is None:
+                    when_changed = when_changed.replace(tzinfo=timezone.utc)
+                return when_changed
+
+            # Fallback: parse generalizedTime string manually (YYYYMMDDHHmmss.fZ)
+            raw = str(when_changed).rstrip("Z").split(".")[0]
+            dt = datetime.strptime(raw, "%Y%m%d%H%M%S")
+            return dt.replace(tzinfo=timezone.utc)
+
+        except Exception:
+            logger.warning(
+                "get_group_modified_time: could not retrieve whenChanged | group=%s",
+                group_name,
+                exc_info=True,
+            )
+            return None
