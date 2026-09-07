@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LDAP Group Sync Manager</title>
+  <meta name="description" content="Web interface for managing LDAP, Active Directory, and Entra ID group synchronization pairs.">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-logo">
+      <div class="logo-icon">🔄</div>
+      <h1>LDAP <span>Sync Manager</span></h1>
+    </div>
+    <div class="header-spacer"></div>
+    <span class="header-badge">v1.0 · Dark Mode</span>
+  </header>
+
+  <!-- ── Main body ───────────────────────────────────────────────────────── -->
+  <div class="main-body">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-section-label">Principal</div>
+      <div class="nav-item active" data-section="pairs">
+        <span class="nav-icon">🔀</span>
+        <span>Sync Pairs</span>
+      </div>
+      <div class="nav-item" data-section="environments">
+        <span class="nav-icon">🌐</span>
+        <span>Environments</span>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="content">
+
+      <!-- ══ Sync Pairs Section ════════════════════════════════════════════ -->
+      <section class="section active" id="section-pairs">
+        <div class="page-header">
+          <div class="page-title">
+            Sync Pairs
+            <small>Gestión y ejecución de pares de sincronización</small>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-success" onclick="runSelectedPairs()">▶ Ejecutar seleccionados</button>
+            <button class="btn btn-secondary" onclick="runAllEnabled()">⚡ Ejecutar todos</button>
+            <button class="btn btn-primary" onclick="openNewPairModal()">+ Nuevo par</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="sync-pairs-table">
+            <thead>
+              <tr>
+                <th style="width:36px"><input type="checkbox" class="row-check" id="select-all-pairs" onchange="document.querySelectorAll('.row-check:not(#select-all-pairs)').forEach(cb=>cb.checked=this.checked)"></th>
+                <th>Nombre</th>
+                <th>Origen</th>
+                <th>Dirección</th>
+                <th>Destino</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="7"><div class="empty-state"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ Environments Section ══════════════════════════════════════════ -->
+      <section class="section" id="section-environments">
+        <div class="page-header">
+          <div class="page-title">
+            Environments
+            <small>Configuración de conexiones LDAP, AD y Entra ID</small>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" onclick="openNewEnvModal()">+ Nuevo environment</button>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="envs-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Host / Tenant</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="5"><div class="empty-state"><div class="spinner"></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ══ Sync Pair Modal ══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="pair-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="pair-modal-title">Sync Pair</span>
+      <button class="modal-close" onclick="closePairModal()">×</button>
+    </div>
+    <div class="modal-body" id="pair-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closePairModal()">Cancelar</button>
+      <button class="btn btn-primary" id="pair-modal-save">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Environment Modal ════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="env-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="env-modal-title">Environment</span>
+      <button class="modal-close" onclick="closeEnvModal()">×</button>
+    </div>
+    <div class="modal-body" id="env-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeEnvModal()">Cancelar</button>
+      <button class="btn btn-primary" id="env-modal-save">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Toast Container ══════════════════════════════════════════════════════ -->
+<div id="toast-container"></div>
+
+<!-- ══ Scripts ══════════════════════════════════════════════════════════════ -->
+<script src="/static/js/api.js"></script>
+<script src="/static/js/sync_pairs.js"></script>
+<script src="/static/js/environments.js"></script>
+<script src="/static/js/app.js"></script>
+
+</body>
+</html>

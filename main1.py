@@ -14,6 +14,6 @@ sync_service = SyncService(
     evq_service=evq
 )
 
-engine = SyncEngine(sync_service)
+engine = SyncEngine(sync_service, factory=services)
 
 engine.run()
