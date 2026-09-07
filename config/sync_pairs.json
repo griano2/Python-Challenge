@@ -15,7 +15,7 @@
         "target_environment": "AD_DF2",
         "target_group": "Python-Test-Group-4",
         "direction": "ENTRA_TO_AD",
-        "enabled": true
+        "enabled": false
     },
     {
         "name": "Python Test Group Sync AD to Entra",
@@ -42,6 +42,6 @@
         "target_environment": "AD_DF2",
         "target_group": "Python-Test-Group-5",
         "direction": "LDS_TO_AD",
-        "enabled": false 
+        "enabled": false
     }
 ]

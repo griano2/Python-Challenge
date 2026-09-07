@@ -1,0 +1,54 @@
+2026-09-07 10:45:46,670 | INFO | Secret 'lds-cred' retrieved successfully
+2026-09-07 10:45:49,101 | INFO | LDAP connection successful | user=GuermeurGroupManagem@slb.com | server=evq.lds.slb.com
+2026-09-07 10:45:49,101 | INFO | LDAP service initialized | host=evq.lds.slb.com | port=636 | search_base=O=slb,C=an
+2026-09-07 10:45:51,708 | INFO | Secret 'entra-cred' retrieved successfully
+2026-09-07 10:45:52,150 | INFO | EntraIDService initialized | tenant=29e24ee1-ce28-4d6c-9b84-3856f4568c5c
+2026-09-07 10:45:52,151 | INFO | Running sync 'Python Test Group Sync AD to AD' (AD_TO_AD)
+2026-09-07 10:45:52,152 | INFO | Starting AD_TO_AD sync | source=Python-Test-Group-1 | target=Python-Test-Group-2
+2026-09-07 10:45:52,425 | WARNING | Group DN not found | group=Python-Test-Group-1 | search_base=O=slb,C=an | filter_attribute=alias | ldap_result={'result': 0, 'description': 'success', 'dn': '', 'message': '', 'referrals': None, 'type': 'searchResDone'}
+2026-09-07 10:45:52,730 | WARNING | Group DN not found | group=Python-Test-Group-2 | search_base=O=slb,C=an | filter_attribute=alias | ldap_result={'result': 0, 'description': 'success', 'dn': '', 'message': '', 'referrals': None, 'type': 'searchResDone'}
+2026-09-07 10:45:52,731 | ERROR | AD_TO_AD failed | source=Python-Test-Group-1 | target=Python-Test-Group-2
+Traceback (most recent call last):
+  File "c:\Users\griano2\Documents\Python Challenge\services\sync_service.py", line 36, in sync_ad_groups
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: Cannot sync: source or target AD group not found | source=Python-Test-Group-1 | target=Python-Test-Group-2
+2026-09-07 10:45:52,734 | INFO | AUDIT | action=SYNC_AD_TO_AD | user=Python-Test-Group-1 | group=Python-Test-Group-2 | success=False | details=Cannot sync: source or target AD group not found | source=Python-Test-Group-1 | target=Python-Test-Group-2
+2026-09-07 10:45:52,734 | ERROR | Sync failed: Python Test Group Sync AD to AD
+Traceback (most recent call last):
+  File "c:\Users\griano2\Documents\Python Challenge\services\sync_engine.py", line 49, in run_pair
+    self._dispatch(pair)
+    ~~~~~~~~~~~~~~^^^^^^
+  File "c:\Users\griano2\Documents\Python Challenge\services\sync_engine.py", line 141, in _dispatch
+    self.sync_service.sync_ad_groups(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        pair.source_group, pair.target_group
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\griano2\Documents\Python Challenge\services\sync_service.py", line 36, in sync_ad_groups
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: Cannot sync: source or target AD group not found | source=Python-Test-Group-1 | target=Python-Test-Group-2
+2026-09-07 10:45:52,738 | INFO | Running sync 'Python Test Group Sync AD to LDS' (AD_TO_LDS)
+2026-09-07 10:45:52,738 | INFO | Starting AD_TO_LDS sync | source=Python-Test-Group-5 | target=Other_Python-Test-Group-6
+2026-09-07 10:45:53,038 | WARNING | Group DN not found | group=Python-Test-Group-5 | search_base=O=slb,C=an | filter_attribute=alias | ldap_result={'result': 0, 'description': 'success', 'dn': '', 'message': '', 'referrals': None, 'type': 'searchResDone'}
+2026-09-07 10:45:53,345 | ERROR | Sync failed: Python Test Group Sync AD to LDS
+Traceback (most recent call last):
+  File "c:\Users\griano2\Documents\Python Challenge\services\sync_engine.py", line 49, in run_pair
+    self._dispatch(pair)
+    ~~~~~~~~~~~~~~^^^^^^
+  File "c:\Users\griano2\Documents\Python Challenge\services\sync_engine.py", line 125, in _dispatch
+    self.sync_service.sync_ad_to_lds(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        pair.source_group, pair.target_group
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\griano2\Documents\Python Challenge\services\sync_service.py", line 393, in sync_ad_to_lds
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: Cannot sync: source or target group not found | source=Python-Test-Group-5 | target=Other_Python-Test-Group-6

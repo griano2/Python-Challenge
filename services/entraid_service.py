@@ -74,6 +74,18 @@ class EntraIDService:
             "Authorization": f"Bearer {self._get_token()}"
         }
 
+    def _raise_for_graph_response(self, response) -> None:
+        if response.status_code in (401, 403):
+            raise PermissionError(
+                "Microsoft Graph rejected the application token with "
+                f"HTTP {response.status_code}. Grant the app the application "
+                "permissions Group.Read.All and GroupMember.Read.All, "
+                "then grant admin consent. Add GroupMember.ReadWrite.All "
+                "for membership changes."
+            )
+
+        response.raise_for_status()
+
     def get_group_id(self, group_name: str) -> str:
 
         logger.info(
@@ -92,7 +104,7 @@ class EntraIDService:
             params=params,
         )
 
-        resp.raise_for_status()
+        self._raise_for_graph_response(resp)
 
         groups = resp.json().get("value", [])
 
@@ -148,7 +160,7 @@ class EntraIDService:
                 params=params
             )
 
-            resp.raise_for_status()
+            self._raise_for_graph_response(resp)
 
             data = resp.json()
 
@@ -188,7 +200,7 @@ class EntraIDService:
             )
             return None
 
-        response.raise_for_status()
+        self._raise_for_graph_response(response)
         return response.json()["id"]
 
     def add_members_to_group(
@@ -331,7 +343,7 @@ class EntraIDService:
                 headers=self._get_headers(),
                 params=params,
             )
-            resp.raise_for_status()
+            self._raise_for_graph_response(resp)
 
             groups = resp.json().get("value", [])
 

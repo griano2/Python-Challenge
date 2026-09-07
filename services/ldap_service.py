@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from ldap3 import Connection, Server, Tls, MODIFY_ADD, MODIFY_DELETE, SUBTREE
+from ldap3.utils.conv import escape_filter_chars
 from utils.audit import audit_log
 from utils.logging_config import logger
 from services.vault_service import VaultService
@@ -138,7 +139,9 @@ class LDAPService:
         filter_attribute = filter_attribute or self.group_filter_attribute
         attributes = attributes or (self.member_attribute,)
 
-        filter_value = f"({filter_attribute}={group_name})"
+        filter_value = (
+            f"({filter_attribute}={escape_filter_chars(group_name)})"
+        )
 
         entries = self.search(
             search_filter=filter_value,
@@ -177,16 +180,22 @@ class LDAPService:
         group_name: str
     ):
         entries = self.search(
-            search_filter=f"({self.group_filter_attribute}={group_name})",
-            attributes=["distinguishedName"],
+            search_filter=(
+                f"({self.group_filter_attribute}="
+                f"{escape_filter_chars(group_name)})"
+            ),
+            attributes=["objectClass"],
             size_limit=1,
         )
 
         if not entries:
 
             logger.warning(
-                "Group DN not found | group=%s",
-                group_name
+                "Group DN not found | group=%s | search_base=%s | filter_attribute=%s | ldap_result=%s",
+                group_name,
+                self.search_base,
+                self.group_filter_attribute,
+                self.connection.result,
             )
 
             return None
@@ -372,8 +381,8 @@ class LDAPService:
 
         search_filter = (
             f"(|"
-            f"(mail={email})"
-            f"(userPrincipalName={email})"
+            f"(mail={escape_filter_chars(email)})"
+            f"(userPrincipalName={escape_filter_chars(email)})"
             f")"
         )
 
@@ -415,7 +424,10 @@ class LDAPService:
 
         entries = self.search(
             search_base=self.search_base,
-            search_filter=f"({self.user_id_attribute}={directory_id})",
+            search_filter=(
+                f"({self.user_id_attribute}="
+                f"{escape_filter_chars(directory_id)})"
+            ),
             attributes=["distinguishedName", self.user_id_attribute],
             size_limit=1,
         )
@@ -461,7 +473,10 @@ class LDAPService:
     ) -> str | None:
 
         entries = self.search(
-                search_filter=f"({self.uid_attribute}={uid})",
+                search_filter=(
+                    f"({self.uid_attribute}="
+                    f"{escape_filter_chars(uid)})"
+                ),
                 attributes=["distinguishedName"],
                 size_limit=1,
             )
@@ -492,7 +507,10 @@ class LDAPService:
         """
         try:
             entries = self.search(
-                search_filter=f"({self.group_filter_attribute}={group_name})",
+                search_filter=(
+                    f"({self.group_filter_attribute}="
+                    f"{escape_filter_chars(group_name)})"
+                ),
                 attributes=["whenChanged"],
                 size_limit=1,
             )

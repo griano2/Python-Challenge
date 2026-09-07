@@ -1,11 +1,11 @@
 import os
 import base64
-
+from dotenv import load_dotenv
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
-
 from utils.logging_config import logger
 
+load_dotenv()
 
 class VaultService:
 

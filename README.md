@@ -219,6 +219,14 @@ All directory profiles are declared declaratively in [`config/environments.json`
 - **Pagination Support**: Automatically follows `@odata.nextLink` to retrieve large group rosters beyond the 999-entry page limit.
 - **Driver**: [`EntraIDService`](services/entraid_service.py).
 
+The Entra application uses client-credentials authentication. In Microsoft
+Entra admin center, grant these **Application permissions** to the registered
+application and select **Grant admin consent**:
+
+- `Group.Read.All` to find groups.
+- `GroupMember.Read.All` to read group members.
+- `GroupMember.ReadWrite.All` to add or remove group members.
+
 ---
 
 ### Identity Attribute Mapping Matrix
@@ -576,7 +584,7 @@ YYYY-MM-DD HH:MM:SS,sss | INFO | AUDIT | action=<ACTION> | user=<USER_OR_SOURCE>
 
 3. **Install required dependencies**:
    ```bash
-   pip install ldap3 msal requests hvac
+  pip install -r requirements_web.txt
    ```
 
 ---
