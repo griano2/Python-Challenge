@@ -3,7 +3,6 @@
  */
 
 let syncPairs = [];
-let directories = [];  // shared reference filled by directories.js
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -22,7 +21,8 @@ function directionLabel(dir) {
 }
 
 function getDirNames() {
-  return directories.map(d => d.name);
+  const dirs = window.directories || [];
+  return dirs.map(d => d.name);
 }
 
 // ── Load & Render ────────────────────────────────────────────────────────────
@@ -99,8 +99,22 @@ async function runAllEnabled() {
 // ── Modal — Create / Edit ────────────────────────────────────────────────────
 
 function buildPairModalContent(pair = null) {
-  const dirOptionsSource = getDirNames().map(n => `<option value="${n}" ${pair?.source_directory === n ? 'selected' : ''}>${n}</option>`).join('');
-  const dirOptionsTarget = getDirNames().map(n => `<option value="${n}" ${pair?.target_directory === n ? 'selected' : ''}>${n}</option>`).join('');
+  let dirNames = getDirNames();
+  if (pair?.source_directory && !dirNames.includes(pair.source_directory)) {
+    dirNames.push(pair.source_directory);
+  }
+  if (pair?.target_directory && !dirNames.includes(pair.target_directory)) {
+    dirNames.push(pair.target_directory);
+  }
+
+  const dirOptionsSource = dirNames.length
+    ? dirNames.map(n => `<option value="${n}" ${pair?.source_directory === n ? 'selected' : ''}>${n}</option>`).join('')
+    : '<option value="" disabled selected>No hay directorios disponibles</option>';
+
+  const dirOptionsTarget = dirNames.length
+    ? dirNames.map(n => `<option value="${n}" ${pair?.target_directory === n ? 'selected' : ''}>${n}</option>`).join('')
+    : '<option value="" disabled selected>No hay directorios disponibles</option>';
+
   const dirOptions = DIRECTIONS.map(d => `<option value="${d}" ${pair?.direction === d ? 'selected' : ''}>${d}</option>`).join('');
 
   return `
@@ -112,7 +126,7 @@ function buildPairModalContent(pair = null) {
       <div class="section-divider">Origen</div>
       <div class="form-group">
         <label class="form-label">Directory origen *</label>
-        <select class="form-select" name="source_directory">${dirOptionsSource}</select>
+        <select class="form-select" name="source_directory" required>${dirOptionsSource}</select>
       </div>
       <div class="form-group">
         <label class="form-label">Grupo origen *</label>
@@ -121,7 +135,7 @@ function buildPairModalContent(pair = null) {
       <div class="section-divider">Destino</div>
       <div class="form-group">
         <label class="form-label">Directory destino *</label>
-        <select class="form-select" name="target_directory">${dirOptionsTarget}</select>
+        <select class="form-select" name="target_directory" required>${dirOptionsTarget}</select>
       </div>
       <div class="form-group">
         <label class="form-label">Grupo destino *</label>
@@ -143,7 +157,12 @@ function buildPairModalContent(pair = null) {
     </form>`;
 }
 
-function openNewPairModal() {
+async function openNewPairModal() {
+  if (!window.directories || !window.directories.length) {
+    if (typeof loadDirectories === 'function') {
+      await loadDirectories();
+    }
+  }
   const modal = document.getElementById('pair-modal');
   document.getElementById('pair-modal-title').textContent = 'Nuevo Sync Pair';
   document.getElementById('pair-modal-body').innerHTML = buildPairModalContent();
@@ -152,7 +171,12 @@ function openNewPairModal() {
   modal.classList.add('open');
 }
 
-function openEditPairModal(index) {
+async function openEditPairModal(index) {
+  if (!window.directories || !window.directories.length) {
+    if (typeof loadDirectories === 'function') {
+      await loadDirectories();
+    }
+  }
   const pair = syncPairs[index];
   const modal = document.getElementById('pair-modal');
   document.getElementById('pair-modal-title').textContent = 'Editar Sync Pair';

@@ -26,6 +26,7 @@ class DirectoryPayload(BaseModel):
     graph_base_url: Optional[str] = None
     scopes: Optional[list[str]] = None
 
+    bind_username: Optional[str] = None
     secret_name: Optional[str] = None
 
 

@@ -2,17 +2,19 @@
  * directories.js — Directories section logic.
  */
 
-// directories[] is shared with sync_pairs.js via the global reference.
-let directories = [];
+// window.directories is shared across scripts (e.g. sync_pairs.js).
+window.directories = [];
 
 const DIR_TYPES = ['AD', 'LDS', 'ENTRA'];
 
 // ── Load & Render ────────────────────────────────────────────────────────────
 
 async function loadDirectories() {
-  directories = await API.getDirectories();
+  window.directories = await API.getDirectories();
   renderDirectoriesTable();
+  return window.directories;
 }
+window.loadDirectories = loadDirectories;
 
 function dirTypeBadge(type) {
   const map = { AD: 'badge-ad', LDS: 'badge-lds', ENTRA: 'badge-entra' };
@@ -23,12 +25,13 @@ function renderDirectoriesTable() {
   const tbody = document.querySelector('#dirs-table tbody');
   if (!tbody) return;
 
-  if (!directories.length) {
+  const list = window.directories || [];
+  if (!list.length) {
     tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">🌐</div><p>No hay directorios configurados.</p></div></td></tr>`;
     return;
   }
 
-  tbody.innerHTML = directories.map((dir, i) => {
+  tbody.innerHTML = list.map((dir, i) => {
     const hostOrTenant = dir.host
       ? `${dir.host}:${dir.port || ''}`
       : dir.tenant_id || '—';
@@ -94,6 +97,10 @@ function buildDirModalContent(dir = null) {
         <div class="form-group">
           <label class="form-label">Search Base</label>
           <input class="form-input" name="search_base" value="${dir?.search_base || ''}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bind Username</label>
+          <input class="form-input" name="bind_username" value="${dir?.bind_username || ''}">
         </div>
         <div class="form-group">
           <label class="form-label">Group Filter Attribute</label>
@@ -178,7 +185,7 @@ function openNewDirModal() {
 }
 
 function openEditDirModal(index) {
-  const dir = directories[index];
+  const dir = (window.directories || [])[index];
   const modal = document.getElementById('dir-modal');
   document.getElementById('dir-modal-title').textContent = 'Editar Directory';
   document.getElementById('dir-modal-body').innerHTML = buildDirModalContent(dir);
@@ -218,6 +225,7 @@ async function saveDir() {
     payload.host                  = fd.get('host') || null;
     payload.port                  = parseInt(fd.get('port')) || null;
     payload.search_base           = fd.get('search_base') || null;
+    payload.bind_username         = fd.get('bind_username') || null;
     payload.group_filter_attribute = fd.get('group_filter_attribute') || null;
     payload.member_attribute      = fd.get('member_attribute') || null;
     payload.user_id_attribute     = fd.get('user_id_attribute') || null;
