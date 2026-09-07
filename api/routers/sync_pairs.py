@@ -22,7 +22,10 @@ def _build_engine():
 
     factory = ServiceFactory()
 
-    ldap_env  = next((e for e in envs.values() if e.env_type in {"AD", "LDS", "LDAP"}), None)
+    ldap_env  = (
+        next((e for e in envs.values() if e.env_type == "AD"), None)
+        or next((e for e in envs.values() if e.env_type == "LDAP"), None)
+    )
     entra_env = next((e for e in envs.values() if e.env_type == "ENTRA"), None)
     evq_env   = next((e for e in envs.values() if e.env_type == "LDS"), None)
 
