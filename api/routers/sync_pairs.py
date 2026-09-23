@@ -103,7 +103,7 @@ def run_all_enabled():
     try:
         engine = _build_engine()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to initialize engine: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Unable to initialize engine: {str(e)}")
 
     for pair in pairs:
         try:

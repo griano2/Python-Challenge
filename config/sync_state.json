@@ -1,8 +1,14 @@
 {
   "Python Test Group Sync AD to AD": {
-    "last_synced_at": "2026-09-07T15:52:44.912675+00:00"
+    "last_synced_at": "2026-09-09T13:44:38.915443+00:00"
   },
   "Python Test Group Sync AD to LDS": {
-    "last_synced_at": "2026-09-07T15:53:06.921534+00:00"
+    "last_synced_at": "2026-09-09T13:45:07.923372+00:00"
+  },
+  "CLI sync: Python-Test-Group-1 -> Python-Test-Group-2": {
+    "last_synced_at": "2026-09-08T13:15:31.436442+00:00"
+  },
+  "Python Test Group Sync Entra to AD": {
+    "last_synced_at": "2026-09-09T13:44:47.323019+00:00"
   }
 }

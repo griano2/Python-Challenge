@@ -40,7 +40,7 @@ class EntraIDService:
             try:
                 self.token_cache.deserialize(CACHE_FILE.read_text(encoding="utf-8"))
             except Exception as e:
-                logger.warning("No se pudo cargar la caché de tokens de Entra: %s", e)
+                logger.warning("Unable to load the Entra token cache: %s", e)
 
         self.app = msal.PublicClientApplication(
             client_id=client_id,
@@ -61,13 +61,13 @@ class EntraIDService:
             try:
                 CACHE_FILE.write_text(self.token_cache.serialize(), encoding="utf-8")
             except Exception as e:
-                logger.warning("No se pudo guardar la caché de tokens de Entra: %s", e)
+                logger.warning("Unable to save the Entra token cache: %s", e)
 
     def _get_token(self) -> str:
-        # 1. Intentar obtención silenciosa desde la caché
+        # 1. Attempt silent token acquisition from the cache.
         accounts = self.app.get_accounts()
         if accounts:
-            logger.debug("Intentando obtención silenciosa de token para %s", accounts[0].get("username"))
+            logger.debug("Attempting silent token acquisition for %s", accounts[0].get("username"))
             result = self.app.acquire_token_silent(
                 scopes=self.scopes,
                 account=accounts[0],
@@ -77,9 +77,9 @@ class EntraIDService:
                 return result["access_token"]
 
         # 2. Flujo interactivo: abre el navegador con la pantalla oficial de Microsoft
-        logger.info("Abriendo ventana de navegador para inicio de sesión en Microsoft...")
+        logger.info("Opening browser window for Microsoft sign-in...")
         print("\n" + "=" * 70)
-        print(">>> INICIANDO SESIÓN EN MICROSOFT: Por favor completa el login en la")
+        print(">>> SIGNING IN TO MICROSOFT: Please complete the login in the")
         print(">>> ventana del navegador que se acaba de abrir.")
         print("=" * 70 + "\n")
 
@@ -90,7 +90,7 @@ class EntraIDService:
 
         if "access_token" not in result:
             logger.error(
-                "Error en autenticación interactiva de Entra ID | detalles=%s",
+                "Entra ID interactive authentication error | details=%s",
                 result.get("error_description")
             )
             raise Exception(
@@ -98,7 +98,7 @@ class EntraIDService:
             )
 
         self._save_cache()
-        logger.info("Autenticación con Microsoft exitosa")
+        logger.info("Microsoft authentication successful")
         return result["access_token"]
 
     def _get_headers(self) -> dict:
@@ -110,7 +110,7 @@ class EntraIDService:
     def _raise_for_graph_response(self, response) -> None:
         if response.status_code in (401, 403):
             raise PermissionError(
-                f"Microsoft Graph rechazó la solicitud con HTTP {response.status_code}. "
+                f"Microsoft Graph rejected the request with HTTP {response.status_code}. "
                 f"Detalle: {response.text}"
             )
 

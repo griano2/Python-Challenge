@@ -27,7 +27,7 @@ function renderDirectoriesTable() {
 
   const list = window.directories || [];
   if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">🌐</div><p>No hay directorios configurados.</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">🌐</div><p>No directories configured.</p></div></td></tr>`;
     return;
   }
 
@@ -40,11 +40,11 @@ function renderDirectoriesTable() {
       <td class="td-name">${dir.name}</td>
       <td>${dirTypeBadge(dir.dir_type)}</td>
       <td class="td-mono">${hostOrTenant}</td>
-      <td><span class="badge ${dir.enabled !== false ? 'badge-enabled' : 'badge-disabled'}">${dir.enabled !== false ? '● Activo' : '○ Inactivo'}</span></td>
+      <td><span class="badge ${dir.enabled !== false ? 'badge-enabled' : 'badge-disabled'}">${dir.enabled !== false ? '● Active' : '○ Inactive'}</span></td>
       <td>
         <div class="td-actions">
-          <button class="btn btn-secondary btn-sm" onclick="openEditDirModal(${i})">✏ Editar</button>
-          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteDir('${dir.name}')" title="Eliminar">🗑</button>
+          <button class="btn btn-secondary btn-sm" onclick="openEditDirModal(${i})">✏ Edit</button>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteDir('${dir.name}')" title="Delete">🗑</button>
         </div>
       </td>
     </tr>`;
@@ -63,11 +63,11 @@ function buildDirModalContent(dir = null) {
   return `
     <form id="dir-form" class="form-grid">
       <div class="form-group">
-        <label class="form-label">Nombre *</label>
+        <label class="form-label">Name *</label>
         <input class="form-input" name="name" value="${dir?.name || ''}" required ${dir ? 'readonly' : ''}>
       </div>
       <div class="form-group">
-        <label class="form-label">Tipo *</label>
+        <label class="form-label">Type *</label>
         <select class="form-select" name="dir_type" onchange="refreshDirFields(this.value)">${typeOptions}</select>
       </div>
       <div class="form-group span-2">
@@ -75,23 +75,23 @@ function buildDirModalContent(dir = null) {
         <input class="form-input" name="display_name" value="${dir?.display_name || ''}">
       </div>
       <div class="form-group span-2">
-        <label class="form-label">Estado</label>
+        <label class="form-label">Status</label>
         <label class="form-toggle">
           <input type="checkbox" id="dir-enabled" name="enabled" ${dir?.enabled !== false ? 'checked' : ''}>
           <div class="toggle-track"><div class="toggle-thumb"></div></div>
-          <span>Habilitado</span>
+          <span>Enabled</span>
         </label>
       </div>
 
       <!-- LDAP / AD / LDS fields -->
       <div id="ldap-fields" style="display:${isLdap ? 'contents' : 'none'}">
-        <div class="section-divider">Conexión LDAP</div>
+        <div class="section-divider">LDAP Connection</div>
         <div class="form-group">
           <label class="form-label">Host</label>
           <input class="form-input" name="host" value="${dir?.host || ''}">
         </div>
         <div class="form-group">
-          <label class="form-label">Puerto</label>
+          <label class="form-label">Port</label>
           <input class="form-input" name="port" type="number" value="${dir?.port || 636}">
         </div>
         <div class="form-group">
@@ -123,7 +123,7 @@ function buildDirModalContent(dir = null) {
           <label class="form-toggle">
             <input type="checkbox" id="dir-ssl" name="use_ssl" ${dir?.use_ssl !== false ? 'checked' : ''}>
             <div class="toggle-track"><div class="toggle-thumb"></div></div>
-            <span>Usar SSL</span>
+            <span>Use SSL</span>
           </label>
         </div>
         <div class="form-group">
@@ -131,7 +131,7 @@ function buildDirModalContent(dir = null) {
           <label class="form-toggle">
             <input type="checkbox" id="dir-alias" name="group_name_is_alias" ${dir?.group_name_is_alias ? 'checked' : ''}>
             <div class="toggle-track"><div class="toggle-thumb"></div></div>
-            <span>Sí</span>
+            <span>Yes</span>
           </label>
         </div>
         <div class="form-group">
@@ -160,7 +160,7 @@ function buildDirModalContent(dir = null) {
           <input class="form-input" name="graph_base_url" value="${dir?.graph_base_url || 'https://graph.microsoft.com/v1.0'}">
         </div>
         <div class="form-group span-2">
-          <label class="form-label">Scopes (separados por coma)</label>
+          <label class="form-label">Scopes (comma-separated)</label>
           <input class="form-input" name="scopes" value="${dir?.scopes ? dir.scopes.join(', ') : 'Group.ReadWrite.All'}">
         </div>
       </div>
@@ -177,7 +177,7 @@ function refreshDirFields(type) {
 
 function openNewDirModal() {
   const modal = document.getElementById('dir-modal');
-  document.getElementById('dir-modal-title').textContent = 'Nuevo Directory';
+  document.getElementById('dir-modal-title').textContent = 'New Directory';
   document.getElementById('dir-modal-body').innerHTML = buildDirModalContent();
   document.getElementById('dir-modal-save').dataset.editing = '';
   document.getElementById('dir-modal-save').onclick = saveDir;
@@ -187,7 +187,7 @@ function openNewDirModal() {
 function openEditDirModal(index) {
   const dir = (window.directories || [])[index];
   const modal = document.getElementById('dir-modal');
-  document.getElementById('dir-modal-title').textContent = 'Editar Directory';
+  document.getElementById('dir-modal-title').textContent = 'Edit Directory';
   document.getElementById('dir-modal-body').innerHTML = buildDirModalContent(dir);
   document.getElementById('dir-modal-save').dataset.editing = dir.name;
   document.getElementById('dir-modal-save').onclick = saveDir;
@@ -240,25 +240,25 @@ async function saveDir() {
   try {
     if (editingName) {
       await API.updateDirectory(editingName, payload);
-      showToast('success', 'Directory actualizado', payload.name);
+      showToast('success', 'Directory updated', payload.name);
     } else {
       await API.createDirectory(payload);
-      showToast('success', 'Directory creado', payload.name);
+      showToast('success', 'Directory created', payload.name);
     }
     closeDirModal();
     await loadDirectories();
   } catch (e) {
-    showToast('error', 'Error al guardar', e.message);
+    showToast('error', 'Save error', e.message);
   }
 }
 
 async function deleteDir(name) {
-  if (!confirm(`¿Eliminar el directory "${name}"? Esta acción puede romper sync pairs que lo referencien.`)) return;
+  if (!confirm(`Delete directory "${name}"? This may break sync pairs that reference it.`)) return;
   try {
     await API.deleteDirectory(name);
-    showToast('success', 'Directory eliminado', name);
+    showToast('success', 'Directory deleted', name);
     await loadDirectories();
   } catch (e) {
-    showToast('error', 'Error al eliminar', e.message);
+    showToast('error', 'Delete error', e.message);
   }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,10 +10,10 @@
 <!-- ── Mandatory Login Screen ────────────────────────────────────────── -->
 <div id="login-screen" class="login-screen hidden">
   <div class="login-card">
-    <div class="login-badge">Acceso Requerido</div>
+    <div class="login-badge">Access Required</div>
     <div class="login-icon">🔄</div>
     <h2 class="login-title">Group Sync Manager</h2>
-    <p class="login-subtitle">Inicia sesión con tu cuenta corporativa de Microsoft para gestionar directorios y autorizar sincronizaciones.</p>
+    <p class="login-subtitle">Sign in with your corporate Microsoft account to manage directories and authorize synchronizations.</p>
     
     <button class="btn-microsoft" id="btn-ms-login" onclick="loginWithMicrosoft()">
       <svg class="ms-logo" width="20" height="20" viewBox="0 0 21 21">
@@ -22,10 +22,10 @@
         <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
         <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
       </svg>
-      <span id="btn-ms-text">Iniciar sesión con Microsoft</span>
+      <span id="btn-ms-text">Sign in with Microsoft</span>
     </button>
     <div class="login-hint">
-      <span>🔒 Autenticación delegada segura vía Microsoft Entra ID</span>
+      <span>🔒 Secure delegated authentication via Microsoft Entra ID</span>
     </div>
   </div>
 </div>
@@ -42,9 +42,9 @@
     <div class="header-user" id="header-user" style="display: none;">
       <div class="user-info">
         <span class="user-avatar" id="user-avatar">👤</span>
-        <span class="user-name" id="user-display-name">Usuario</span>
+        <span class="user-name" id="user-display-name">User</span>
       </div>
-      <button class="btn btn-secondary btn-sm" onclick="logout()" title="Cerrar sesión">Salir</button>
+      <button class="btn btn-secondary btn-sm" onclick="logout()" title="Sign out">Sign out</button>
     </div>
   </header>
 
@@ -53,7 +53,7 @@
 
     <!-- Sidebar -->
     <nav class="sidebar">
-      <div class="sidebar-section-label">Principal</div>
+      <div class="sidebar-section-label">Main</div>
       <div class="nav-item active" data-section="pairs">
         <span class="nav-icon">🔀</span>
         <span>Sync Pairs</span>
@@ -72,12 +72,12 @@
         <div class="page-header">
           <div class="page-title">
             Sync Pairs
-            <small>Gestión y ejecución de pares de sincronización</small>
+            <small>Manage and run synchronization pairs</small>
           </div>
           <div class="page-actions">
-            <button class="btn btn-success" onclick="runSelectedPairs()">▶ Ejecutar seleccionados</button>
-            <button class="btn btn-secondary" onclick="runAllEnabled()">⚡ Ejecutar todos</button>
-            <button class="btn btn-primary" onclick="openNewPairModal()">+ Nuevo par</button>
+            <button class="btn btn-success" onclick="runSelectedPairs()">▶ Run selected</button>
+            <button class="btn btn-secondary" onclick="runAllEnabled()">⚡ Run all</button>
+            <button class="btn btn-primary" onclick="openNewPairModal()">+ New pair</button>
           </div>
         </div>
 
@@ -86,12 +86,12 @@
             <thead>
               <tr>
                 <th style="width:36px"><input type="checkbox" class="row-check" id="select-all-pairs" onchange="document.querySelectorAll('.row-check:not(#select-all-pairs)').forEach(cb=>cb.checked=this.checked)"></th>
-                <th>Nombre</th>
-                <th>Origen</th>
-                <th>Dirección</th>
-                <th>Destino</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th>Name</th>
+                <th>Source</th>
+                <th>Direction</th>
+                <th>Target</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -106,10 +106,10 @@
         <div class="page-header">
           <div class="page-title">
             Directories
-            <small>Configuración de conexiones LDAP, AD y Entra ID</small>
+            <small>Configure LDAP, AD, and Entra ID connections</small>
           </div>
           <div class="page-actions">
-            <button class="btn btn-primary" onclick="openNewDirModal()">+ Nuevo directory</button>
+            <button class="btn btn-primary" onclick="openNewDirModal()">+ New directory</button>
           </div>
         </div>
 
@@ -117,11 +117,11 @@
           <table id="dirs-table">
             <thead>
               <tr>
-                <th>Nombre</th>
-                <th>Tipo</th>
+                <th>Name</th>
+                <th>Type</th>
                 <th>Host / Tenant</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -144,8 +144,8 @@
     </div>
     <div class="modal-body" id="pair-modal-body"></div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closePairModal()">Cancelar</button>
-      <button class="btn btn-primary" id="pair-modal-save">Guardar</button>
+      <button class="btn btn-secondary" onclick="closePairModal()">Cancel</button>
+      <button class="btn btn-primary" id="pair-modal-save">Save</button>
     </div>
   </div>
 </div>
@@ -159,8 +159,8 @@
     </div>
     <div class="modal-body" id="dir-modal-body"></div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeDirModal()">Cancelar</button>
-      <button class="btn btn-primary" id="dir-modal-save">Guardar</button>
+      <button class="btn btn-secondary" onclick="closeDirModal()">Cancel</button>
+      <button class="btn btn-primary" id="dir-modal-save">Save</button>
     </div>
   </div>
 </div>

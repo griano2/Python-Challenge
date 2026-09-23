@@ -14,7 +14,7 @@ def _get_entra_service() -> EntraIDService:
     if not entra_dir:
         raise HTTPException(
             status_code=404,
-            detail="No se encontró un directorio configurado de tipo ENTRA",
+            detail="No ENTRA directory is configured",
         )
 
     return EntraIDService(
@@ -29,18 +29,18 @@ def _get_entra_service() -> EntraIDService:
 
 @router.get("/status")
 def auth_status():
-    """Retorna el estado de autenticación actual del usuario con Microsoft Entra ID."""
+    """Return the current user's Microsoft Entra ID authentication status."""
     try:
         entra = _get_entra_service()
     except HTTPException:
-        # Si no hay directorio Entra configurado, no bloqueamos el acceso
+        # Do not block access when no Entra directory is configured.
         return {"authenticated": True, "user": {"name": "Admin Local", "username": "local"}}
 
     accounts = entra.app.get_accounts()
     if not accounts:
         return {"authenticated": False, "user": None}
 
-    # Intentar validación silenciosa
+    # Attempt silent validation.
     token = entra.app.acquire_token_silent(scopes=entra.scopes, account=accounts[0])
     if token and "access_token" in token:
         entra._save_cache()
@@ -58,10 +58,10 @@ def auth_status():
 
 @router.post("/login")
 def login():
-    """Inicia el flujo interactivo de Microsoft abriendo la ventana oficial de login."""
+    """Start Microsoft's interactive flow by opening the official login window."""
     entra = _get_entra_service()
     try:
-        # _get_token() dispara acquire_token_interactive si no hay token silencioso válido
+        # _get_token() starts acquire_token_interactive when no valid silent token exists.
         token = entra._get_token()
         accounts = entra.app.get_accounts()
         acc = accounts[0] if accounts else {}
@@ -78,7 +78,7 @@ def login():
 
 @router.post("/logout")
 def logout():
-    """Cierra la sesión activa eliminando las cuentas de la caché local."""
+    """Sign out of the active session by removing accounts from the local cache."""
     try:
         entra = _get_entra_service()
         for account in entra.app.get_accounts():

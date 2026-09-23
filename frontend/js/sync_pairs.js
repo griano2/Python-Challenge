@@ -37,7 +37,7 @@ function renderSyncPairsTable() {
   if (!tbody) return;
 
   if (!syncPairs.length) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🔄</div><p>No hay sync pairs configurados.</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🔄</div><p>No sync pairs configured.</p></div></td></tr>`;
     return;
   }
 
@@ -48,12 +48,12 @@ function renderSyncPairsTable() {
       <td class="td-mono">${p.source_directory}<br><small>${p.source_group}</small></td>
       <td>${directionLabel(p.direction)}</td>
       <td class="td-mono">${p.target_directory}<br><small>${p.target_group}</small></td>
-      <td><span class="badge ${p.enabled ? 'badge-enabled' : 'badge-disabled'}">${p.enabled ? '● Habilitado' : '○ Disabled'}</span></td>
+      <td><span class="badge ${p.enabled ? 'badge-enabled' : 'badge-disabled'}">${p.enabled ? '● Enabled' : '○ Disabled'}</span></td>
       <td>
         <div class="td-actions">
           <button class="btn btn-success btn-sm btn-icon" onclick="runSinglePair('${p.name}')" title="Ejecutar">▶</button>
-          <button class="btn btn-secondary btn-sm" onclick="openEditPairModal(${i})">✏ Editar</button>
-          <button class="btn btn-danger btn-sm btn-icon" onclick="deletePair('${p.name}')" title="Eliminar">🗑</button>
+          <button class="btn btn-secondary btn-sm" onclick="openEditPairModal(${i})">✏ Edit</button>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deletePair('${p.name}')" title="Delete">🗑</button>
         </div>
       </td>
     </tr>`).join('');
@@ -62,18 +62,18 @@ function renderSyncPairsTable() {
 // ── Run ──────────────────────────────────────────────────────────────────────
 
 async function runSinglePair(name) {
-  showToast('info', 'Ejecutando...', name);
+  showToast('info', 'Running...', name);
   const res = await API.runSyncPair(name);
   if (res.status === 'success') {
-    showToast('success', 'Sync completado', name);
+    showToast('success', 'Sync completed', name);
   } else {
-    showToast('error', `Sync falló: ${name}`, res.detail || 'Error desconocido');
+    showToast('error', `Sync failed: ${name}`, res.detail || 'Unknown error');
   }
 }
 
 async function runSelectedPairs() {
   const checked = [...document.querySelectorAll('.row-check:checked')].map(cb => cb.dataset.name);
-  if (!checked.length) { showToast('info', 'Selecciona al menos un par'); return; }
+  if (!checked.length) { showToast('info', 'Select at least one pair'); return; }
 
   for (const name of checked) {
     await runSinglePair(name);
@@ -81,18 +81,18 @@ async function runSelectedPairs() {
 }
 
 async function runAllEnabled() {
-  showToast('info', 'Ejecutando todos los pares habilitados...');
+  showToast('info', 'Running all enabled pairs...');
   try {
     const res = await API.runAllEnabled();
     const ok = res.results.filter(r => r.status === 'success').length;
     const fail = res.results.filter(r => r.status === 'error').length;
     if (fail === 0) {
-      showToast('success', 'Todos completados', `${ok} pares ejecutados`);
+      showToast('success', 'All completed', `${ok} pairs executed`);
     } else {
-      showToast('error', `${fail} fallos, ${ok} éxitos`, res.results.filter(r => r.status === 'error').map(r => r.pair).join(', '));
+      showToast('error', `${fail} failures, ${ok} successes`, res.results.filter(r => r.status === 'error').map(r => r.pair).join(', '));
     }
   } catch (e) {
-    showToast('error', 'Error al ejecutar', e.message);
+    showToast('error', 'Execution error', e.message);
   }
 }
 
@@ -109,49 +109,49 @@ function buildPairModalContent(pair = null) {
 
   const dirOptionsSource = dirNames.length
     ? dirNames.map(n => `<option value="${n}" ${pair?.source_directory === n ? 'selected' : ''}>${n}</option>`).join('')
-    : '<option value="" disabled selected>No hay directorios disponibles</option>';
+    : '<option value="" disabled selected>No directories available</option>';
 
   const dirOptionsTarget = dirNames.length
     ? dirNames.map(n => `<option value="${n}" ${pair?.target_directory === n ? 'selected' : ''}>${n}</option>`).join('')
-    : '<option value="" disabled selected>No hay directorios disponibles</option>';
+    : '<option value="" disabled selected>No directories available</option>';
 
   const dirOptions = DIRECTIONS.map(d => `<option value="${d}" ${pair?.direction === d ? 'selected' : ''}>${d}</option>`).join('');
 
   return `
     <form id="pair-form" class="form-grid">
       <div class="form-group span-2">
-        <label class="form-label">Nombre del par *</label>
+        <label class="form-label">Pair name *</label>
         <input class="form-input" name="name" value="${pair?.name || ''}" required ${pair ? 'readonly' : ''}>
       </div>
-      <div class="section-divider">Origen</div>
+      <div class="section-divider">Source</div>
       <div class="form-group">
-        <label class="form-label">Directory origen *</label>
+        <label class="form-label">Source directory *</label>
         <select class="form-select" name="source_directory" required>${dirOptionsSource}</select>
       </div>
       <div class="form-group">
-        <label class="form-label">Grupo origen *</label>
+        <label class="form-label">Source group *</label>
         <input class="form-input" name="source_group" value="${pair?.source_group || ''}" required>
       </div>
-      <div class="section-divider">Destino</div>
+      <div class="section-divider">Target</div>
       <div class="form-group">
-        <label class="form-label">Directory destino *</label>
+        <label class="form-label">Target directory *</label>
         <select class="form-select" name="target_directory" required>${dirOptionsTarget}</select>
       </div>
       <div class="form-group">
-        <label class="form-label">Grupo destino *</label>
+        <label class="form-label">Target group *</label>
         <input class="form-input" name="target_group" value="${pair?.target_group || ''}" required>
       </div>
-      <div class="section-divider">Configuración</div>
+      <div class="section-divider">Settings</div>
       <div class="form-group">
-        <label class="form-label">Dirección *</label>
+        <label class="form-label">Direction *</label>
         <select class="form-select" name="direction">${dirOptions}</select>
       </div>
       <div class="form-group">
-        <label class="form-label">Estado</label>
+        <label class="form-label">Status</label>
         <label class="form-toggle">
           <input type="checkbox" id="pair-enabled" name="enabled" ${pair?.enabled !== false ? 'checked' : ''}>
           <div class="toggle-track"><div class="toggle-thumb"></div></div>
-          <span>Habilitado</span>
+          <span>Enabled</span>
         </label>
       </div>
     </form>`;
@@ -164,7 +164,7 @@ async function openNewPairModal() {
     }
   }
   const modal = document.getElementById('pair-modal');
-  document.getElementById('pair-modal-title').textContent = 'Nuevo Sync Pair';
+  document.getElementById('pair-modal-title').textContent = 'New Sync Pair';
   document.getElementById('pair-modal-body').innerHTML = buildPairModalContent();
   document.getElementById('pair-modal-save').onclick = savePair;
   document.getElementById('pair-modal-save').dataset.editing = '';
@@ -179,7 +179,7 @@ async function openEditPairModal(index) {
   }
   const pair = syncPairs[index];
   const modal = document.getElementById('pair-modal');
-  document.getElementById('pair-modal-title').textContent = 'Editar Sync Pair';
+  document.getElementById('pair-modal-title').textContent = 'Edit Sync Pair';
   document.getElementById('pair-modal-body').innerHTML = buildPairModalContent(pair);
   document.getElementById('pair-modal-save').dataset.editing = pair.name;
   document.getElementById('pair-modal-save').onclick = savePair;
@@ -210,25 +210,25 @@ async function savePair() {
   try {
     if (editingName) {
       await API.updateSyncPair(editingName, payload);
-      showToast('success', 'Par actualizado', payload.name);
+      showToast('success', 'Pair updated', payload.name);
     } else {
       await API.createSyncPair(payload);
-      showToast('success', 'Par creado', payload.name);
+      showToast('success', 'Pair created', payload.name);
     }
     closePairModal();
     await loadSyncPairs();
   } catch (e) {
-    showToast('error', 'Error al guardar', e.message);
+    showToast('error', 'Save error', e.message);
   }
 }
 
 async function deletePair(name) {
-  if (!confirm(`¿Eliminar el sync pair "${name}"?`)) return;
+  if (!confirm(`Delete sync pair "${name}"?`)) return;
   try {
     await API.deleteSyncPair(name);
-    showToast('success', 'Par eliminado', name);
+    showToast('success', 'Pair deleted', name);
     await loadSyncPairs();
   } catch (e) {
-    showToast('error', 'Error al eliminar', e.message);
+    showToast('error', 'Delete error', e.message);
   }
 }

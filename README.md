@@ -641,7 +641,29 @@ Run `main1.py` to trigger headless synchronization of all enabled pairs configur
 python main1.py
 ```
 
-#### Option C: Executing Test & Seeding Scripts
+#### Option C: Web Frontend (Browser UI)
+The frontend is served by the FastAPI app. To start the web interface:
+
+```bash
+# From the project root
+python run_web.py
+```
+
+This starts the server using `uvicorn` and serves the UI from the `frontend/` folder. Then open this URL in your browser:
+
+```text
+http://localhost:8000/
+```
+
+If you prefer to start it manually instead of using the helper script:
+
+```bash
+uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+> The app serves the static frontend files from `frontend/` and exposes the API routes under the same server.
+
+#### Option D: Executing Test & Seeding Scripts
 Run any test script directly or through `main.py`:
 ```bash
 python tests/test-1.py  # Seeds AD Group 1

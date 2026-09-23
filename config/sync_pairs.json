@@ -15,7 +15,7 @@
         "target_directory": "AD_DF2",
         "target_group": "Python-Test-Group-4",
         "direction": "ENTRA_TO_AD",
-        "enabled": false
+        "enabled": true
     },
     {
         "name": "Python Test Group Sync AD to Entra",

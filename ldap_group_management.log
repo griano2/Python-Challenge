@@ -1,6 +1,157 @@
-2026-09-07 14:50:45,943 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=29e24ee1-ce28-4d6c-9b84-3856f4568c5c
-2026-09-07 14:51:01,504 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=29e24ee1-ce28-4d6c-9b84-3856f4568c5c
-2026-09-07 14:58:09,749 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=29e24ee1-ce28-4d6c-9b84-3856f4568c5c
-2026-09-07 14:59:09,460 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=29e24ee1-ce28-4d6c-9b84-3856f4568c5c
-2026-09-07 15:00:39,453 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=29e24ee1-ce28-4d6c-9b84-3856f4568c5c
-2026-09-07 15:21:34,576 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=29e24ee1-ce28-4d6c-9b84-3856f4568c5c
+2026-09-09 08:44:27,895 | INFO | Secret 'ad-cred' retrieved successfully
+2026-09-09 08:44:31,312 | INFO | LDAP connection successful | user=SVC-Python@slb-tst.com | server=dir-tst.slb-tst.com
+2026-09-09 08:44:31,313 | INFO | LDAP service initialized | host=dir-tst.slb-tst.com | port=636 | search_base=DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:31,877 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=organizations
+2026-09-09 08:44:34,595 | INFO | Secret 'lds-cred' retrieved successfully
+2026-09-09 08:44:36,449 | INFO | LDAP connection successful | user=GuermeurGroupManagem@slb.com | server=evq.lds.slb.com
+2026-09-09 08:44:36,450 | INFO | LDAP service initialized | host=evq.lds.slb.com | port=636 | search_base=O=slb,C=an
+2026-09-09 08:44:36,452 | INFO | Running sync 'Python Test Group Sync AD to AD' (AD_TO_AD)
+2026-09-09 08:44:36,888 | INFO | Starting AD_TO_AD sync | source=Python-Test-Group-1 | target=Python-Test-Group-2
+2026-09-09 08:44:37,540 | INFO | Retrieved group members | group=Python-Test-Group-1 | count=5
+2026-09-09 08:44:37,814 | INFO | Retrieved group members | group=Python-Test-Group-2 | count=0
+2026-09-09 08:44:38,035 | INFO | AUDIT | action=ADD | user=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-09-09 08:44:38,036 | INFO | User added to group | user=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:38,255 | INFO | AUDIT | action=ADD | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-09-09 08:44:38,256 | INFO | User added to group | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:38,473 | INFO | AUDIT | action=ADD | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-09-09 08:44:38,474 | INFO | User added to group | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:38,692 | INFO | AUDIT | action=ADD | user=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-09-09 08:44:38,693 | INFO | User added to group | user=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:38,912 | INFO | AUDIT | action=ADD | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-09-09 08:44:38,913 | INFO | User added to group | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:38,913 | INFO | Group add operation completed | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | attempted=5
+2026-09-09 08:44:38,913 | INFO | No members to remove | group=CN=Python-Test-Group-2,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:38,914 | INFO | AD_TO_AD complete | source=Python-Test-Group-1 | target=Python-Test-Group-2 | source_members=5 | target_members=0 | add=5 | remove=0
+2026-09-09 08:44:38,914 | INFO | AUDIT | action=SYNC_AD_TO_AD | user=Python-Test-Group-1 | group=Python-Test-Group-2 | success=True | details=source_members=5;target_members=0;add=5;remove=0
+2026-09-09 08:44:38,914 | INFO | Sync completed successfully: Python Test Group Sync AD to AD
+2026-09-09 08:44:38,918 | INFO | Running sync 'Python Test Group Sync Entra to AD' (ENTRA_TO_AD)
+2026-09-09 08:44:40,506 | INFO | Starting ENTRA_TO_AD sync | source=Python-Test-Group-3 | target=Python-Test-Group-4
+2026-09-09 08:44:40,507 | INFO | Searching EntraID group | group=Python-Test-Group-3
+2026-09-09 08:44:41,782 | INFO | EntraID group found | group=Python-Test-Group-3 | id=61d5639d-ce08-4093-9c97-ef68286c09e4
+2026-09-09 08:44:42,017 | INFO | Retrieving EntraID group members | group=Python-Test-Group-3
+2026-09-09 08:44:42,018 | INFO | Searching EntraID group | group=Python-Test-Group-3
+2026-09-09 08:44:43,288 | INFO | EntraID group found | group=Python-Test-Group-3 | id=61d5639d-ce08-4093-9c97-ef68286c09e4
+2026-09-09 08:44:44,572 | INFO | EntraID members retrieved | group=Python-Test-Group-3 | count=5 | pages=1
+2026-09-09 08:44:44,810 | INFO | User lookup successful | email=ADM-GRiano2@slb-tst.com | dn=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:45,030 | INFO | User lookup successful | email=ADM-JCastano5@slb-tst.com | dn=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:45,249 | INFO | User lookup successful | email=adm-JPena49@slb-tst.com | dn=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:45,478 | INFO | User lookup successful | email=MBXHoustonAP@slb-tst.com | dn=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:45,704 | INFO | User lookup successful | email=NEfendi@slb-tst.com | dn=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:45,921 | INFO | Retrieved group members | group=Python-Test-Group-4 | count=0
+2026-09-09 08:44:46,140 | INFO | AUDIT | action=ADD | user=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-09-09 08:44:46,140 | INFO | User added to group | user=CN=Nurul Nadiah Mhd Efendi  900402,OU=Employee,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:46,666 | INFO | AUDIT | action=ADD | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-09-09 08:44:46,666 | INFO | User added to group | user=CN=Gabriel Riano,OU=Priv,OU=Admin,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:46,883 | INFO | AUDIT | action=ADD | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-09-09 08:44:46,883 | INFO | User added to group | user=CN=Jose Castano,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:47,100 | INFO | AUDIT | action=ADD | user=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-09-09 08:44:47,100 | INFO | User added to group | user=CN=Mailbox Houston AP (Smith)  646954,OU=General,OU=Role,OU=Accounts,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:47,320 | INFO | AUDIT | action=ADD | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | success=True | details=
+2026-09-09 08:44:47,320 | INFO | User added to group | user=CN=Jhon Pena,OU=Priv,OU=Admins,DC=dir-tst,DC=slb-tst,DC=com | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:47,321 | INFO | Group add operation completed | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com | attempted=5
+2026-09-09 08:44:47,321 | INFO | No members to remove | group=CN=Python-Test-Group-4,OU=EAR-AA-121,OU=Applications,OU=Groups,DC=dir-tst,DC=slb-tst,DC=com
+2026-09-09 08:44:47,321 | INFO | ENTRA_TO_AD complete | source=Python-Test-Group-3 | target=Python-Test-Group-4 | source_members=5 | target_members=0 | add=5 | remove=0
+2026-09-09 08:44:47,321 | INFO | AUDIT | action=SYNC_ENTRA_TO_AD | user=Python-Test-Group-3 | group=Python-Test-Group-4 | success=True | details=source_members=5;target_members=0;add=5;remove=0
+2026-09-09 08:44:47,322 | INFO | Sync completed successfully: Python Test Group Sync Entra to AD
+2026-09-09 08:44:47,325 | INFO | Running sync 'Python Test Group Sync AD to LDS' (AD_TO_LDS)
+2026-09-09 08:44:47,763 | INFO | Starting AD_TO_LDS sync | source=Python-Test-Group-5 | target=Other_Python-Test-Group-6
+2026-09-09 08:44:48,414 | INFO | Retrieved group members | group=Python-Test-Group-5 | count=45
+2026-09-09 08:44:51,126 | WARNING | User not found | id=1297772
+2026-09-09 08:44:51,561 | WARNING | User not found | id=1297761
+2026-09-09 08:44:53,080 | WARNING | User not found | id=1104212
+2026-09-09 08:44:53,517 | WARNING | User not found | id=1261269
+2026-09-09 08:44:55,476 | WARNING | User not found | id=1297823
+2026-09-09 08:44:55,694 | WARNING | User not found | id=1105560
+2026-09-09 08:44:56,597 | WARNING | User not found | id=1105150
+2026-09-09 08:44:58,653 | WARNING | User not found | id=1047247
+2026-09-09 08:44:59,089 | INFO | Retrieved group members | group=Other_Python-Test-Group-6 | count=0
+2026-09-09 08:44:59,090 | INFO | Delta calculated | source=Python-Test-Group-5 | target=Other_Python-Test-Group-6 | add=37 | remove=0
+2026-09-09 08:44:59,528 | INFO | AUDIT | action=ADD | user=CN=Jose Oquendo  1280711,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:44:59,529 | INFO | User added to group | user=CN=Jose Oquendo  1280711,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:44:59,750 | INFO | AUDIT | action=ADD | user=CN=Aiman Azrie Bin Hashim  2066490,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:44:59,750 | INFO | User added to group | user=CN=Aiman Azrie Bin Hashim  2066490,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:44:59,972 | INFO | AUDIT | action=ADD | user=CN=Xue Li Chua  898059,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:44:59,972 | INFO | User added to group | user=CN=Xue Li Chua  898059,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:00,224 | INFO | AUDIT | action=ADD | user=CN=Fakhriatul Bashieroh Binti Pazli  1332887,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:00,224 | INFO | User added to group | user=CN=Fakhriatul Bashieroh Binti Pazli  1332887,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:00,454 | INFO | AUDIT | action=ADD | user=CN=Ivan Rojo-trejo  1259487,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:00,454 | INFO | User added to group | user=CN=Ivan Rojo-trejo  1259487,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:00,677 | INFO | AUDIT | action=ADD | user=CN=Isabella Herran  2061216,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:00,678 | INFO | User added to group | user=CN=Isabella Herran  2061216,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:00,899 | INFO | AUDIT | action=ADD | user=CN=Nur Syahirah Binti Jamal  2067532,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:00,899 | INFO | User added to group | user=CN=Nur Syahirah Binti Jamal  2067532,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:01,124 | INFO | AUDIT | action=ADD | user=CN=Dixon Melendez  1289782,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:01,124 | INFO | User added to group | user=CN=Dixon Melendez  1289782,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:01,347 | INFO | AUDIT | action=ADD | user=CN=Angela Uribe  2014175,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:01,347 | INFO | User added to group | user=CN=Angela Uribe  2014175,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:01,571 | INFO | AUDIT | action=ADD | user=CN=Gustavo Carrera  184019,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:01,571 | INFO | User added to group | user=CN=Gustavo Carrera  184019,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:01,795 | INFO | AUDIT | action=ADD | user=CN=Darwin Guiza  1289803,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:01,795 | INFO | User added to group | user=CN=Darwin Guiza  1289803,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:02,037 | INFO | AUDIT | action=ADD | user=CN=Carlos Nino  1273627,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:02,037 | INFO | User added to group | user=CN=Carlos Nino  1273627,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:02,282 | INFO | AUDIT | action=ADD | user=CN=Nik Afiqah Wan Mohammad Zaimi  1010578,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:02,282 | INFO | User added to group | user=CN=Nik Afiqah Wan Mohammad Zaimi  1010578,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:02,504 | INFO | AUDIT | action=ADD | user=CN=John Camacho  1290139,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:02,504 | INFO | User added to group | user=CN=John Camacho  1290139,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:02,730 | INFO | AUDIT | action=ADD | user=CN=Nur Faqihah Mastura Binti Ismail  2067210,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:02,731 | INFO | User added to group | user=CN=Nur Faqihah Mastura Binti Ismail  2067210,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:02,956 | INFO | AUDIT | action=ADD | user=CN=Siti Hajar Binti Muchtar  1359602,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:02,957 | INFO | User added to group | user=CN=Siti Hajar Binti Muchtar  1359602,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:03,185 | INFO | AUDIT | action=ADD | user=CN=Yusbar Bahari  1010580,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:03,185 | INFO | User added to group | user=CN=Yusbar Bahari  1010580,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:03,408 | INFO | AUDIT | action=ADD | user=CN=Daffa Wahyu Mahardika  2062400,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:03,408 | INFO | User added to group | user=CN=Daffa Wahyu Mahardika  2062400,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:03,632 | INFO | AUDIT | action=ADD | user=CN=Amy Shikin Andi Asdi  868447,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:03,633 | INFO | User added to group | user=CN=Amy Shikin Andi Asdi  868447,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:03,855 | INFO | AUDIT | action=ADD | user=CN=Farah Nabila Norzaman  1016291,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:03,855 | INFO | User added to group | user=CN=Farah Nabila Norzaman  1016291,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:04,085 | INFO | AUDIT | action=ADD | user=CN=Lina Castro  1304396,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:04,085 | INFO | User added to group | user=CN=Lina Castro  1304396,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:04,311 | INFO | AUDIT | action=ADD | user=CN=Atikah Tauhid  1024808,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:04,311 | INFO | User added to group | user=CN=Atikah Tauhid  1024808,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:04,542 | INFO | AUDIT | action=ADD | user=CN=Nurul Izzah Sophiah Mohd Azman  1275532,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:04,542 | INFO | User added to group | user=CN=Nurul Izzah Sophiah Mohd Azman  1275532,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:04,765 | INFO | AUDIT | action=ADD | user=CN=Mateo Perea  1290116,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:04,766 | INFO | User added to group | user=CN=Mateo Perea  1290116,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:04,987 | INFO | AUDIT | action=ADD | user=CN=Matheo Bermudez  1287914,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:04,988 | INFO | User added to group | user=CN=Matheo Bermudez  1287914,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:05,216 | INFO | AUDIT | action=ADD | user=CN=Juan Rosero  1273831,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:05,216 | INFO | User added to group | user=CN=Juan Rosero  1273831,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:05,436 | INFO | AUDIT | action=ADD | user=CN=Valeria Medina  2047803,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:05,436 | INFO | User added to group | user=CN=Valeria Medina  2047803,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:05,658 | INFO | AUDIT | action=ADD | user=CN=Nurulain Balqis Binti Mat Daud  2067753,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:05,659 | INFO | User added to group | user=CN=Nurulain Balqis Binti Mat Daud  2067753,OU=student,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:05,885 | INFO | AUDIT | action=ADD | user=CN=Ifaz K V M  361919,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:05,885 | INFO | User added to group | user=CN=Ifaz K V M  361919,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:06,105 | INFO | AUDIT | action=ADD | user=CN=Cristhian Nieto  1284871,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:06,106 | INFO | User added to group | user=CN=Cristhian Nieto  1284871,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:06,334 | INFO | AUDIT | action=ADD | user=CN=Menagah Goval  881466,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:06,334 | INFO | User added to group | user=CN=Menagah Goval  881466,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:06,558 | INFO | AUDIT | action=ADD | user=CN=Didier Leon  1280483,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:06,558 | INFO | User added to group | user=CN=Didier Leon  1280483,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:06,797 | INFO | AUDIT | action=ADD | user=CN=Paula Diaz  1350461,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:06,797 | INFO | User added to group | user=CN=Paula Diaz  1350461,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:07,028 | INFO | AUDIT | action=ADD | user=CN=David Pena  1284569,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:07,029 | INFO | User added to group | user=CN=David Pena  1284569,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:07,253 | INFO | AUDIT | action=ADD | user=CN=Daniel Giraldo  1284413,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:07,253 | INFO | User added to group | user=CN=Daniel Giraldo  1284413,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:07,477 | INFO | AUDIT | action=ADD | user=CN=Muhammad Adil Wafi Muhammad Zaini  1052878,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:07,478 | INFO | User added to group | user=CN=Muhammad Adil Wafi Muhammad Zaini  1052878,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:07,703 | INFO | AUDIT | action=ADD | user=CN=Juan Gomez  1284412,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | success=True | details=
+2026-09-09 08:45:07,703 | INFO | User added to group | user=CN=Juan Gomez  1284412,OU=employee,O=slb,C=an | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:07,704 | INFO | Group add operation completed | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an | attempted=37
+2026-09-09 08:45:07,921 | INFO | No members to remove | group=CN=Other - Python-Test-Group-6  1000040493,OU=mg,OU=group,O=slb,C=an
+2026-09-09 08:45:07,922 | INFO | AD_TO_LDS complete | source=Python-Test-Group-5 | target=Other_Python-Test-Group-6 | source_members=45 | target_members=0 | add=37 | remove=0
+2026-09-09 08:45:07,922 | INFO | AUDIT | action=SYNC_AD_TO_LDS | user=Python-Test-Group-5 | group=Other_Python-Test-Group-6 | success=True | details=source_members=45;target_members=0;add=37;remove=0
+2026-09-09 08:45:07,922 | INFO | Sync completed successfully: Python Test Group Sync AD to LDS
+2026-09-09 08:48:33,240 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=organizations
+2026-09-09 08:48:35,535 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=organizations
+2026-09-09 08:48:35,691 | INFO | Abriendo ventana de navegador para inicio de sesión en Microsoft...
+2026-09-09 08:48:43,225 | INFO | Autenticación con Microsoft exitosa
+2026-09-09 09:14:42,831 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=organizations
+2026-09-09 09:14:44,916 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=organizations
+2026-09-09 09:15:00,420 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=organizations
+2026-09-09 09:17:34,501 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=organizations
+2026-09-09 09:18:05,008 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=organizations
+2026-09-09 09:18:52,815 | INFO | EntraIDService initialized (Interactive / Delegated) | tenant=organizations

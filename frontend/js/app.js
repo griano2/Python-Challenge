@@ -65,7 +65,7 @@ function showApp(user) {
   if (mainBody) mainBody.style.display = '';
   if (headerUser) headerUser.style.display = 'flex';
   if (userDisplayName && user) {
-    userDisplayName.textContent = user.name || user.username || 'Usuario';
+    userDisplayName.textContent = user.name || user.username || 'User';
     userDisplayName.title = user.username || '';
   }
 }
@@ -73,20 +73,20 @@ function showApp(user) {
 async function loginWithMicrosoft() {
   const btn = document.getElementById('btn-ms-login');
   const textSpan = document.getElementById('btn-ms-text');
-  const originalText = textSpan ? textSpan.textContent : 'Iniciar sesión con Microsoft';
+  const originalText = textSpan ? textSpan.textContent : 'Sign in with Microsoft';
 
   if (btn) btn.disabled = true;
-  if (textSpan) textSpan.innerHTML = '<span class="spinner"></span> Esperando autenticación...';
+  if (textSpan) textSpan.innerHTML = '<span class="spinner"></span> Waiting for authentication...';
 
   try {
     const res = await API.loginMicrosoft();
     if (res && res.status === 'success') {
-      showToast('success', 'Sesión iniciada', `Bienvenido, ${res.user?.name || res.user?.username || ''}`);
+      showToast('success', 'Signed in', `Welcome, ${res.user?.name || res.user?.username || ''}`);
       showApp(res.user);
       await Promise.all([loadSyncPairs(), loadDirectories()]);
     }
   } catch (e) {
-    showToast('error', 'Error al iniciar sesión', e.message);
+    showToast('error', 'Sign-in error', e.message);
   } finally {
     if (btn) btn.disabled = false;
     if (textSpan) textSpan.textContent = originalText;
@@ -96,9 +96,9 @@ async function loginWithMicrosoft() {
 async function logout() {
   try {
     await API.logout();
-    showToast('info', 'Sesión cerrada', 'Has cerrado la sesión de Microsoft');
+    showToast('info', 'Signed out', 'You have signed out of Microsoft');
   } catch (e) {
-    showToast('error', 'Error al cerrar sesión', e.message);
+    showToast('error', 'Sign-out error', e.message);
   } finally {
     currentUser = null;
     showLogin();
