@@ -78,11 +78,6 @@ class EntraIDService:
 
         # 2. Flujo interactivo: abre el navegador con la pantalla oficial de Microsoft
         logger.info("Opening browser window for Microsoft sign-in...")
-        print("\n" + "=" * 70)
-        print(">>> SIGNING IN TO MICROSOFT: Please complete the login in the")
-        print(">>> ventana del navegador que se acaba de abrir.")
-        print("=" * 70 + "\n")
-
         result = self.app.acquire_token_interactive(
             scopes=self.scopes,
             prompt="select_account",
@@ -239,10 +234,6 @@ class EntraIDService:
         upns: list[str],
     ) -> bool:
         if not upns:
-            logger.info(
-                "No users to add | group=%s",
-                group_name,
-            )
             return True
 
         group_id = self.get_group_id(group_name)
@@ -275,11 +266,6 @@ class EntraIDService:
                     group_dn=group_name,
                     success=True,
                 )
-                logger.debug(
-                    "EntraID user added to group | upn=%s | group=%s",
-                    upn,
-                    group_name,
-                )
             else:
                 failed = True
                 audit_log(
@@ -304,10 +290,6 @@ class EntraIDService:
         upns: list[str],
     ) -> bool:
         if not upns:
-            logger.info(
-                "No users to remove | group=%s",
-                group_name,
-            )
             return True
 
         group_id = self.get_group_id(group_name)
@@ -331,11 +313,6 @@ class EntraIDService:
                     user_dn=upn,
                     group_dn=group_name,
                     success=True,
-                )
-                logger.debug(
-                    "EntraID user removed from group | upn=%s | group=%s",
-                    upn,
-                    group_name,
                 )
             else:
                 failed = True

@@ -50,7 +50,6 @@ class SyncEngine:
 
             self._dispatch(pair)
 
-            logger.info("Sync completed successfully: %s", pair.name)
             self.state_repo.mark_synced(pair.name)
 
         except Exception:

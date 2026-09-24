@@ -1,6 +1,6 @@
 # Enterprise Directory Synchronization Engine
 
-A robust, enterprise-grade identity and group synchronization platform built in Python. This framework provides seamless, bidirectional group membership synchronization across heterogeneous directory environments: **Active Directory (On-Premise LDAP)**, **Lightweight Directory Services (LDS / EVQ LDAP)**, and **Microsoft Entra ID (Cloud Azure AD via Microsoft Graph API)**, backed by **HashiCorp Vault** for secure credential management and structured audit logging.
+A robust, enterprise-grade identity and group synchronization platform built in Python. This framework provides seamless, bidirectional group membership synchronization across heterogeneous directory environments: **Active Directory (On-Premise LDAP)**, **Lightweight Directory Services (LDS / EVQ LDAP)**, and **Microsoft Entra ID (Cloud Azure AD via Microsoft Graph API)**, backed by **Azure Key Vault** for secure credential management and structured audit logging.
 
 ---
 
@@ -17,7 +17,7 @@ A robust, enterprise-grade identity and group synchronization platform built in 
   - [Profile 3: Microsoft Entra ID (`ENTRA_DF2`)](#profile-3-microsoft-entra-id-entra_df2)
   - [Identity Attribute Mapping Matrix](#identity-attribute-mapping-matrix)
 - [3. Secure Secrets Management](#3-secure-secrets-management)
-  - [HashiCorp Vault Integration](#hashicorp-vault-integration)
+  - [Azure Key Vault Integration](#azure-key-vault-integration)
   - [Vault Service Architecture](#vault-service-architecture)
   - [Security Principles](#security-principles)
 - [4. Synchronization Pairs & Engine](#4-synchronization-pairs--engine)
@@ -35,7 +35,7 @@ A robust, enterprise-grade identity and group synchronization platform built in 
 - [7. Installation & Setup Guide](#7-installation--setup-guide)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-  - [Vault Configuration](#vault-configuration)
+  - [Azure Key Vault Configuration](#azure-key-vault-configuration)
   - [Usage Guide](#usage-guide)
 
 ---
@@ -63,7 +63,7 @@ The system follows a clean, decoupled multi-tiered architecture separating confi
                          │                                          │
                          ▼                                          │
 ┌─────────────────────────────────────────────┐                     │
-│               SERVICE FACTORY               │◄──── [ VaultService (HashiCorp Vault) ]
+│               SERVICE FACTORY               │◄──── [ VaultService (Azure Key Vault) ]
 │               ServiceFactory                │                     │
 └────────────────────────┬────────────────────┘                     │
                          │                                          │
@@ -94,7 +94,7 @@ The system follows a clean, decoupled multi-tiered architecture separating confi
 1. **Repository Pattern** ([`DirectoryRepository`](repositories/directory_repository.py), [`SyncConfigRepository`](repositories/sync_config_repository.py)): Decouples JSON configuration storage from in-memory domain objects.
 2. **Factory & Registry Pattern** ([`ServiceFactory`](services/service_factory.py)): Dynamically creates and caches directory connectors (`LDAPService` or `EntraIDService`) based on directory types and properties.
 3. **Engine & Strategy Pattern** ([`SyncEngine`](services/sync_engine.py), [`SyncService`](services/sync_service.py)): Decouples sync orchestration and configuration loop from directory-specific translation strategies (`AD_TO_AD`, `ENTRA_TO_AD`, `AD_TO_ENTRA`, `AD_TO_LDS`, `LDS_TO_AD`).
-4. **Zero-Hardcoded Secrets**: Credential management is delegated to HashiCorp Vault via [`VaultService`](services/vault_service.py).
+4. **Zero-Hardcoded Secrets**: Credential management is delegated to Azure Key Vault via [`VaultService`](services/vault_service.py).
 5. **Idempotence & Delta Calculation**: Synchronization operations compute mathematical set differences (`Source \ Target` and `Target \ Source`) to issue minimal additive and subtractive changes.
 
 ### Directory Synchronization Flow
@@ -145,7 +145,7 @@ All directory profiles are declared declaratively in [`config/directories.json`]
     "user_id_attribute": "ID",
     "uid_attribute": "uidNumber",
     "group_name_is_alias": true,
-    "secret_name": "challenge/ldscreds"
+    "secret_name": "lds-cred"
   },
   {
     "name": "AD_DF2",
@@ -154,12 +154,12 @@ All directory profiles are declared declaratively in [`config/directories.json`]
     "port": 636,
     "use_ssl": true,
     "search_base": "DC=dir-tst,DC=slb-tst,DC=com",
-    "group_filter_attribute": "cn",
+    "group_filter_attribute": "sAMAccountName",
     "member_attribute": "member",
     "user_id_attribute": "ID",
     "uid_attribute": "uidNumber",
     "group_name_is_alias": false,
-    "secret_name": "challenge/creds"
+    "secret_name": "ad-cred"
   },
   {
     "name": "ENTRA_DF2",
@@ -168,8 +168,8 @@ All directory profiles are declared declaratively in [`config/directories.json`]
     "client_id": "b72a9dfb-3c95-467e-b93f-26462722f615",
     "authority": "https://login.microsoftonline.com/29e24ee1-ce28-4d6c-9b84-3856f4568c5c",
     "graph_base_url": "https://graph.microsoft.com/v1.0",
-    "scopes": ["https://graph.microsoft.com/.default"],
-    "secret_name": "challenge/entra-app"
+    "scopes": ["Group.ReadWrite.All"],
+    "secret_name": null
   }
 ]
 ```
@@ -182,11 +182,11 @@ All directory profiles are declared declaratively in [`config/directories.json`]
 - **Connection Protocol**: LDAPS (LDAP over SSL) on port `636`.
 - **Search Base**: `DC=dir-tst,DC=slb-tst,DC=com`
 - **Key Attributes**:
-  - Group Filter: `cn` (Common Name)
+  - Group Filter: `sAMAccountName`
   - Member Attribute: `member` (stores distinguished names of user objects)
   - User Identifier: `userPrincipalName` / `mail` / `sAMAccountName`
   - Employee Numeric ID: `uidNumber`
-- **Authentication**: Bound dynamically using credentials stored under Vault path `challenge/creds`.
+- **Authentication**: Bound dynamically using credentials retrieved from Azure Key Vault secret `ad-cred`.
 - **Driver**: [`LDAPService`](services/ldap_service.py) via `ldap3` library with TLS certificate bypass configured for test lab flexibility.
 
 ---
@@ -201,7 +201,7 @@ All directory profiles are declared declaratively in [`config/directories.json`]
   - Member Attribute: `uniqueMember` (stores user DNs formatted as `CN=FirstName LastName <EmployeeID>,OU=...,O=slb,C=an`)
   - User ID Attribute: `ID`
   - UID Attribute: `uidNumber`
-- **Authentication**: Bound dynamically using credentials retrieved from Vault path `challenge/ldscreds`.
+- **Authentication**: Bound dynamically using credentials retrieved from Azure Key Vault secret `lds-cred`.
 - **Driver**: [`LDAPService`](services/ldap_service.py) with alias resolution to identify target group DNs.
 
 ---
@@ -216,7 +216,7 @@ All directory profiles are declared declaratively in [`config/directories.json`]
 - **Authentication Flow**:
   - Handled via `msal.ConfidentialClientApplication`.
   - Obtains an application token with `acquire_token_for_client`; no user login or browser interaction is used.
-  - The client secret is read from Vault path `challenge/entra-app` as the `password` field.
+  - Entra ID uses interactive delegated authentication through MSAL; directory credentials are not stored in this service.
 - **Pagination Support**: Automatically follows `@odata.nextLink` to retrieve large group rosters beyond the 999-entry page limit.
 - **Driver**: [`EntraIDService`](services/entraid_service.py).
 
@@ -247,44 +247,38 @@ Cross-directory synchronization requires translating disparate identity represen
 
 ## 3. Secure Secrets Management
 
-### HashiCorp Vault Integration
+### Azure Key Vault Integration
 
-The framework enforces strict zero-hardcoded secrets practices. Connection passwords for LDAP and LDS instances are stored in a local **HashiCorp Vault** instance running the **KV (Key-Value) Version 2 secrets engine**.
+The framework enforces strict zero-hardcoded secrets practices. Connection credentials for AD and LDS are stored as Base64-encoded secrets in **Azure Key Vault**. Authentication uses `DefaultAzureCredential`, allowing local development through Azure CLI or environment credentials and hosted execution through managed identity.
 
 ```text
 ┌───────────────────────────────────────────────────────────────────┐
 │                        Python Application                         │
 │                                                                   │
-│                   $env:rootToken (Environment)                    │
+│                   KEY_VAULT_URL (Environment)                     │
 │                                │                                  │
 │                                ▼                                  │
 │                     services/vault_service.py                     │
 │                          (VaultService)                           │
 └─────────────────────────────────┬─────────────────────────────────┘
-                                  │  hvac authenticated TLS request
+                                  │  Azure SDK request via DefaultAzureCredential
                                   ▼
 ┌───────────────────────────────────────────────────────────────────┐
-│                      HashiCorp Vault Server                       │
-│                     (http://127.0.0.1:8200)                       │
+│                         Azure Key Vault                           │
+│                  (https://<vault>.vault.azure.net)                │
 │                                                                   │
-│                KV v2 Engine (mount: "secret/")                    │
-│                ├── challenge/creds      ──► (AD Credentials)      │
-│                ├── challenge/ldscreds   ──► (LDS Credentials)     │
-│                └── challenge/entra-app  ──► (Graph App Secret)    │
+│                ├── ad-cred              ──► (AD Credentials)      │
+│                └── lds-cred             ──► (LDS Credentials)     │
 └───────────────────────────────────────────────────────────────────┘
 ```
 
 ### Vault Service Architecture
 
-The [`VaultService`](services/vault_service.py) class leverages the `hvac` Python SDK:
+The [`VaultService`](services/vault_service.py) class uses the Azure SDK:
 
-1. **Authentication**: Reads the `rootToken` environment variable to initialize `hvac.Client(url="http://127.0.0.1:8200", token=token)`.
-2. **Fail-Fast Validation**: Executes `client.is_authenticated()`. If authentication fails or the token is missing, an exception is raised immediately to prevent unauthenticated LDAP binds.
-3. **Secret Retrieval**:
-   - `get_creds(secret_path: str) -> tuple[str, str]`: Generic method that fetches `username` and `password` from any specified path in the `secret` KV v2 mount.
-  - `get_client_secret(secret_path: str) -> str`: Reads the `password` field used as the Entra application client secret.
-   - `get_ad_creds() -> tuple[str, str]`: Shortcut targeting `challenge/creds`.
-   - `get_lds_creds() -> tuple[str, str]`: Shortcut targeting `challenge/ldscreds`.
+1. **Configuration**: Reads `KEY_VAULT_URL` from the environment.
+2. **Authentication**: Creates an Azure `SecretClient` with `DefaultAzureCredential`.
+3. **Secret Retrieval**: `get_secret(secret_name)` retrieves a secret from Azure Key Vault, Base64-decodes its value, and returns it to the directory service.
 
 ### Security Principles
 
@@ -419,7 +413,7 @@ Python-Challenge/
 │   ├── service_factory.py             # Factory & cache for directory service instances
 │   ├── sync_engine.py                 # Batch sync orchestrator for enabled pairs
 │   ├── sync_service.py                # Core synchronization logic for all 5 directions
-│   └── vault_service.py               # HashiCorp Vault secrets provider
+│   └── vault_service.py               # Azure Key Vault secrets provider
 ├── utils/
 │   ├── audit.py                       # Standardized audit event logging helper
 │   └── logging_config.py              # 5MB rotating file logger configuration
@@ -485,10 +479,10 @@ Microsoft Graph API connector for Entra ID operations.
 - `remove_members_from_group(group_name, upns)`: Issues DELETE requests to `/groups/{id}/members/{user_id}/$ref`.
 
 #### [`services/vault_service.py`](services/vault_service.py)
-HashiCorp Vault integration manager.
-- Connects to `http://127.0.0.1:8200` using `rootToken` environment variable.
-- Authenticates against KV v2 engine (`mount_point="secret"`).
-- Methods: `get_creds(path)`, `get_ad_creds()`, `get_lds_creds()`.
+Azure Key Vault integration manager.
+- Connects to the vault URL from `KEY_VAULT_URL`.
+- Authenticates with `DefaultAzureCredential`.
+- Method: `get_secret(secret_name)`, which returns a Base64-decoded secret value.
 
 #### [`services/service_factory.py`](services/service_factory.py)
 Factory and instance registry. Reads [`Directory`](models/directory.py) configuration, instantiates appropriate `LDAPService` or `EntraIDService` connectors, and caches them to prevent redundant network binds.
@@ -572,7 +566,7 @@ YYYY-MM-DD HH:MM:SS,sss | INFO | AUDIT | action=<ACTION> | user=<USER_OR_SOURCE>
 ### Prerequisites
 
 - **Python**: Version 3.10 or higher.
-- **HashiCorp Vault**: Running locally on `http://127.0.0.1:8200` with KV v2 engine enabled at `secret/`.
+- **Azure Key Vault**: An accessible vault containing the `ad-cred` and `lds-cred` secrets.
 - **Network Access**: LDAPS port `636` connectivity to Active Directory and LDS servers, and outbound HTTPS access to `graph.microsoft.com` and `login.microsoftonline.com`.
 
 ### Installation
@@ -599,28 +593,25 @@ YYYY-MM-DD HH:MM:SS,sss | INFO | AUDIT | action=<ACTION> | user=<USER_OR_SOURCE>
 
 ---
 
-### Vault Configuration
+### Azure Key Vault Configuration
 
-1. **Start your Vault server** (Development mode example):
-   ```bash
-   vault server -dev -dev-root-token-id="my-root-token"
-   ```
+1. **Set the Azure Key Vault URL**:
+  ```powershell
+  # Windows PowerShell:
+  $env:KEY_VAULT_URL="https://<your-vault-name>.vault.azure.net/"
+  ```
+  ```bash
+  # Linux/macOS Bash:
+  export KEY_VAULT_URL="https://<your-vault-name>.vault.azure.net/"
+  ```
 
-2. **Set the root token in your environment**:
-   ```powershell
-   # Windows PowerShell:
-   $env:rootToken="my-root-token"
-   ```
-   ```bash
-   # Linux/macOS Bash:
-   export rootToken="my-root-token"
-   ```
+2. **Authenticate locally with Azure**:
+  ```bash
+  az login
+  ```
 
-3. **Write AD and LDS credentials to Vault**:
-   ```bash
-   vault kv put secret/challenge/creds username="your_ad_service_account" password="your_ad_password"
-   vault kv put secret/challenge/ldscreds username="your_lds_service_account" password="your_lds_password"
-   ```
+3. **Create the required secrets**:
+  Store the Base64-encoded AD and LDS credential values in Azure Key Vault under the names `ad-cred` and `lds-cred`. The identity used by the application must have `Key Vault Secrets User` access to read them.
 
 ---
 

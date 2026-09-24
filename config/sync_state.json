@@ -10,5 +10,17 @@
   },
   "Python Test Group Sync Entra to AD": {
     "last_synced_at": "2026-09-09T13:44:47.323019+00:00"
+  },
+  "Python Test Group Sync Entra to AD::Python-Test-Group-3->Python-Test-Group-4": {
+    "last_synced_at": "2026-09-24T14:27:24.477253+00:00"
+  },
+  "Python Test Group Sync AD to AD::Python-Test-Group-1->Python-Test-Group-2": {
+    "last_synced_at": "2026-09-24T14:27:18.438250+00:00"
+  },
+  "Python Test Group Sync AD to LDS::Python-Test-Group-5->Other_Python-Test-Group-6": {
+    "last_synced_at": "2026-09-24T14:27:26.629431+00:00"
+  },
+  "Python Test Group Sync AD to AD 2::Python-Test-Group-2->Python-Test-Group-1": {
+    "last_synced_at": "2026-09-24T14:25:07.621213+00:00"
   }
 }

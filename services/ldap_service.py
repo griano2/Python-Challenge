@@ -224,12 +224,6 @@ class LDAPService:
                 return False
 
         if not members:
-
-            logger.info(
-                "No members to add | group=%s",
-                target_dn
-            )
-
             return True
 
         failed_members = []
@@ -257,12 +251,6 @@ class LDAPService:
                     success=True
                 )
 
-                logger.info(
-                    "User added to group | user=%s | group=%s",
-                    member,
-                    target_dn
-                )
-
             else:
 
                 failed_members.append(member)
@@ -284,12 +272,6 @@ class LDAPService:
                     )
                 )
 
-        logger.info(
-            "Group add operation completed | group=%s | attempted=%s",
-            target_dn,
-            len(members)
-        )
-
         return not failed_members
 
     def remove_members_from_group(
@@ -306,12 +288,6 @@ class LDAPService:
                 return False
 
         if not members:
-
-            logger.info(
-                "No members to remove | group=%s",
-                target_dn
-            )
-
             return True
 
         failed_members = []
@@ -339,12 +315,6 @@ class LDAPService:
                     success=True,
                 )
 
-                logger.info(
-                    "User removed from group | user=%s | group=%s",
-                    member,
-                    target_dn
-                )
-
             else:
 
                 failed_members.append(member)
@@ -365,12 +335,6 @@ class LDAPService:
                         self.connection.result
                     )
                 )
-
-        logger.info(
-            "Group remove operation completed | group=%s | attempted=%s",
-            target_dn,
-            len(members)
-        )
 
         return not failed_members
 
@@ -438,6 +402,33 @@ class LDAPService:
 
         return entries[0].entry_dn
 
+    def find_users_by_ids(
+        self,
+        directory_ids: set[str],
+    ) -> set[str]:
+        if not directory_ids:
+            return set()
+
+        filters = "".join(
+            f"({self.user_id_attribute}={escape_filter_chars(directory_id)})"
+            for directory_id in directory_ids
+        )
+
+        entries = self.search(
+            search_base=self.search_base,
+            search_filter=f"(|{filters})",
+            attributes=["distinguishedName", self.user_id_attribute],
+        )
+
+        members = {entry.entry_dn for entry in entries}
+
+        logger.info(
+            "Users resolved by IDs | count=%s",
+            len(members),
+        )
+
+        return members
+
     def find_upn_by_dn(
         self,
         user_dn: str
@@ -497,6 +488,32 @@ class LDAPService:
         )
 
         return user.entry_dn
+
+    def find_users_by_uids(
+        self,
+        uids: set[str],
+    ) -> set[str]:
+        if not uids:
+            return set()
+
+        filters = "".join(
+            f"({self.uid_attribute}={escape_filter_chars(uid)})"
+            for uid in uids
+        )
+
+        entries = self.search(
+            search_filter=f"(|{filters})",
+            attributes=["distinguishedName", self.uid_attribute],
+        )
+
+        members = {entry.entry_dn for entry in entries}
+
+        logger.info(
+            "Users resolved by UIDs | count=%s",
+            len(members),
+        )
+
+        return members
 
     def get_group_modified_time(self, group_name: str) -> datetime | None:
         """Return the UTC datetime of the last modification of a group.

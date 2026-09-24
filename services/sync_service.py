@@ -119,10 +119,6 @@ class SyncService:
 
         try:
 
-            self.entra.get_group_id(
-                source_group
-            )
-
             target_dn = self.ldap.get_group_dn(
                 target_group
             )
@@ -221,9 +217,7 @@ class SyncService:
             target_group: str):
 
         source_dn = self.ldap.get_group_dn(source_group)
-        target_group_id = self.entra.get_group_id(target_group)
-
-        if not source_dn or not target_group_id:
+        if not source_dn:
             raise ValueError(
                 f"Cannot sync: source or target group not found | "
                 f"source={source_group} | target={target_group}"
@@ -304,11 +298,9 @@ class SyncService:
                 for member in source_members
             }
 
-            ad_source_members = {
-                user_dn
-                for directory_id in source_ids
-                if (user_dn := self.ldap.find_user_by_uid(directory_id))
-            }
+            ad_source_members = self.ldap.find_users_by_uids(
+                source_ids
+            )
 
             target_members = self.ldap.get_group_members(
                 target_group
@@ -404,11 +396,9 @@ class SyncService:
             for member in ad_members
         }
 
-        lds_source_members = {
-            user_dn
-            for directory_id in source_ids
-            if (user_dn := self.evq.find_user_by_id(directory_id))
-        }
+        lds_source_members = self.evq.find_users_by_ids(
+            source_ids
+        )
 
         target_members = set(
             self.evq.get_group_members(target_alias)

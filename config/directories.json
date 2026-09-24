@@ -21,7 +21,7 @@
     "port": 636,
     "use_ssl": true,
     "search_base": "DC=dir-tst,DC=slb-tst,DC=com",
-    "group_filter_attribute": "cn",
+    "group_filter_attribute": "sAMAccountName",
     "member_attribute": "member",
     "user_id_attribute": "ID",
     "uid_attribute": "uidNumber",

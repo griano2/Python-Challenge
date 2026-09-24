@@ -37,7 +37,7 @@
             {
                 "source_group": "Python-Test-Group-4",
                 "target_group": "Python-Test-Group-3",
-                "enabled": true
+                "enabled": false
             }
         ]
     },
@@ -65,6 +65,20 @@
             {
                 "source_group": "Other_Python-Test-Group-6",
                 "target_group": "Python-Test-Group-5",
+                "enabled": true
+            }
+        ]
+    },
+    {
+        "name": "Python Test Group Sync AD to AD 2",
+        "direction": "AD_TO_AD",
+        "source_directory": "AD_DF2",
+        "target_directory": "AD_DF2",
+        "enabled": false,
+        "mappings": [
+            {
+                "source_group": "Python-Test-Group-2",
+                "target_group": "Python-Test-Group-1",
                 "enabled": true
             }
         ]
