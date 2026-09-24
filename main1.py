@@ -27,7 +27,19 @@ def parse_args():
         metavar="CONFIG_NAME",
         help="Run one saved sync config by name (runs all of its enabled group mappings).",
     )
-    return parser.parse_args()
+    group.add_argument(
+        "-a",
+        "--all",
+        action="store_true",
+        help="Run all enabled sync configs and their enabled group mappings.",
+    )
+
+    args = parser.parse_args()
+    if not (args.task or args.config or args.all):
+        parser.print_help()
+        return None
+
+    return args
 
 
 def get_direction(source_type: str, target_type: str) -> str:
@@ -84,6 +96,9 @@ def run_named_config(engine: SyncEngine, name: str) -> None:
 
 def main():
     args = parse_args()
+    if args is None:
+        return
+
     services = ServiceFactory()
     ldap = services.get("AD_DF2")
     entra = services.get("ENTRA_DF2")
@@ -101,7 +116,7 @@ def main():
         engine.run_pair(create_task(args.task))
     elif args.config:
         run_named_config(engine, args.config)
-    else:
+    elif args.all:
         engine.run()
 
 

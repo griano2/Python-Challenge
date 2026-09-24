@@ -449,7 +449,7 @@ Interactive command-line management console providing administrators and develop
 - **Option 0 (Exit)**: Gracefully terminates the application.
 
 #### [`main1.py`](main1.py)
-Automated batch execution script suitable for scheduled tasks or cron jobs. With no arguments, it loads all enabled sync configs from `config/sync_configs.json` via [`SyncEngine`](services/sync_engine.py), expands each into its enabled group mappings, and runs synchronization non-interactively. `-c`/`--config CONFIG_NAME` runs just one saved config by name (`run_named_config`); `-t`/`--task SOURCE_DIR SOURCE_GROUP TARGET_DIR TARGET_GROUP` runs a one-off ad-hoc pair that isn't persisted to any config. The two flags are mutually exclusive.
+Automated batch execution script suitable for scheduled tasks or cron jobs. With no arguments, it displays the command help. `-a`/`--all` loads all enabled sync configs from `config/sync_configs.json` via [`SyncEngine`](services/sync_engine.py), expands each into its enabled group mappings, and runs synchronization non-interactively. `-c`/`--config CONFIG_NAME` runs just one saved config by name (`run_named_config`); `-t`/`--task SOURCE_DIR SOURCE_GROUP TARGET_DIR TARGET_GROUP` runs a one-off ad-hoc pair that isn't persisted to any config. The three actions are mutually exclusive.
 
 ---
 
@@ -636,9 +636,14 @@ Select an option:
 ```
 
 #### Option B: Automated Batch Synchronization
-Run `main1.py` to trigger headless synchronization of all enabled group mappings configured in `config/sync_configs.json`:
+Run `main1.py` without arguments to display the available commands:
 ```bash
 python main1.py
+```
+
+Run all enabled configurations and their enabled group mappings with `-a`/`--all`:
+```bash
+python main1.py --all
 ```
 
 Run a single saved sync config by name (all of its enabled group mappings) with `-c`/`--config`:
@@ -651,7 +656,7 @@ Or run a one-off ad-hoc pair that isn't saved in any config with `-t`/`--task` (
 python main1.py -t AD_DF2 Python-Test-Group-1 AD_DF2 Python-Test-Group-2
 ```
 
-`-c` and `-t` are mutually exclusive; omitting both runs every enabled config.
+`-a`, `-c`, and `-t` are mutually exclusive.
 
 #### Option C: Web Frontend (Browser UI)
 The frontend is served by the FastAPI app. To start the web interface:
