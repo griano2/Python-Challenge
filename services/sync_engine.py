@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import Optional
 
-from repositories.sync_pair_repository import SyncPairRepository
+from models.sync_config import expand_to_pairs
+from repositories.sync_config_repository import SyncConfigRepository
 from repositories.sync_state_repository import SyncStateRepository
 from utils.logging_config import logger
 
@@ -19,14 +20,15 @@ class SyncEngine:
         """
         self.sync_service = sync_service
         self.factory = factory
-        self.sync_pair_repository = SyncPairRepository()
+        self.sync_config_repository = SyncConfigRepository()
         self.state_repo = SyncStateRepository()
 
     # ── Public entry points ──────────────────────────────────────────────────
 
     def run(self) -> None:
-        pairs = self.sync_pair_repository.get_enabled()
-        logger.info("Found %s enabled sync pairs", len(pairs))
+        configs = self.sync_config_repository.get_enabled()
+        pairs = [pair for config in configs for pair in expand_to_pairs(config)]
+        logger.info("Found %s enabled sync mappings across %s configs", len(pairs), len(configs))
 
         for pair in pairs:
             self.run_pair(pair)

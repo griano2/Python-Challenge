@@ -30,11 +30,16 @@ class DirectoryPayload(BaseModel):
     secret_name: Optional[str] = None
 
 
-class SyncPairPayload(BaseModel):
-    name: str
-    source_directory: str
+class GroupMappingPayload(BaseModel):
     source_group: str
-    target_directory: str
-    target_group: str
-    direction: str
+    target_group: Optional[str] = None
     enabled: bool = True
+
+
+class SyncConfigPayload(BaseModel):
+    name: str
+    direction: str
+    source_directory: str
+    target_directory: str
+    enabled: bool = True
+    mappings: list[GroupMappingPayload] = []

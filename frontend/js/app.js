@@ -83,7 +83,7 @@ async function loginWithMicrosoft() {
     if (res && res.status === 'success') {
       showToast('success', 'Signed in', `Welcome, ${res.user?.name || res.user?.username || ''}`);
       showApp(res.user);
-      await Promise.all([loadSyncPairs(), loadDirectories()]);
+      await Promise.all([loadSyncConfigs(), loadDirectories()]);
     }
   } catch (e) {
     showToast('error', 'Sign-in error', e.message);
@@ -115,7 +115,7 @@ async function initApp() {
     const auth = await API.getAuthStatus();
     if (auth && auth.authenticated) {
       showApp(auth.user);
-      await Promise.all([loadSyncPairs(), loadDirectories()]);
+      await Promise.all([loadSyncConfigs(), loadDirectories()]);
     } else {
       showLogin();
     }

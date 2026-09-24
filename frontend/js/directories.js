@@ -2,7 +2,7 @@
  * directories.js — Directories section logic.
  */
 
-// window.directories is shared across scripts (e.g. sync_pairs.js).
+// window.directories is shared across scripts (e.g. sync_configs.js).
 window.directories = [];
 
 const DIR_TYPES = ['AD', 'LDS', 'ENTRA'];

@@ -34,11 +34,11 @@ const API = {
   updateDirectory: (name, payload) => apiFetch(`/api/directories/${encodeURIComponent(name)}`, { method: 'PUT', body: JSON.stringify(payload) }),
   deleteDirectory: (name) => apiFetch(`/api/directories/${encodeURIComponent(name)}`, { method: 'DELETE' }),
 
-  // ── Sync Pairs ──────────────────────────────────────────────────────────
-  getSyncPairs:          () => apiFetch('/api/sync-pairs'),
-  createSyncPair:   (payload) => apiFetch('/api/sync-pairs', { method: 'POST', body: JSON.stringify(payload) }),
-  updateSyncPair:   (name, payload) => apiFetch(`/api/sync-pairs/${encodeURIComponent(name)}`, { method: 'PUT', body: JSON.stringify(payload) }),
-  deleteSyncPair:   (name) => apiFetch(`/api/sync-pairs/${encodeURIComponent(name)}`, { method: 'DELETE' }),
-  runSyncPair:      (name) => apiFetch(`/api/sync-pairs/${encodeURIComponent(name)}/run`, { method: 'POST' }),
-  runAllEnabled:         () => apiFetch('/api/sync-pairs/run-enabled', { method: 'POST' }),
+  // ── Sync Configs ────────────────────────────────────────────────────────
+  getSyncConfigs:          () => apiFetch('/api/sync-configs'),
+  createSyncConfig:   (payload) => apiFetch('/api/sync-configs', { method: 'POST', body: JSON.stringify(payload) }),
+  updateSyncConfig:   (name, payload) => apiFetch(`/api/sync-configs/${encodeURIComponent(name)}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteSyncConfig:   (name) => apiFetch(`/api/sync-configs/${encodeURIComponent(name)}`, { method: 'DELETE' }),
+  runSyncConfig:      (name) => apiFetch(`/api/sync-configs/${encodeURIComponent(name)}/run`, { method: 'POST' }),
+  runAllEnabledConfigs:    () => apiFetch('/api/sync-configs/run-enabled', { method: 'POST' }),
 };

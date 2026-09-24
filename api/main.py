@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from api.routers import directories, sync_pairs, auth
+from api.routers import directories, sync_configs, auth
 
 app = FastAPI(
     title="LDAP Group Sync Manager",
@@ -15,7 +15,7 @@ app = FastAPI(
 # ── Register API routers ────────────────────────────────────────────────────
 app.include_router(auth.router)
 app.include_router(directories.router)
-app.include_router(sync_pairs.router)
+app.include_router(sync_configs.router)
 
 # ── Serve frontend static files ─────────────────────────────────────────────
 FRONTEND_DIR = Path(__file__).parent.parent / "frontend"

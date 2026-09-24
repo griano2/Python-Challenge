@@ -21,8 +21,8 @@ A robust, enterprise-grade identity and group synchronization platform built in 
   - [Vault Service Architecture](#vault-service-architecture)
   - [Security Principles](#security-principles)
 - [4. Synchronization Pairs & Engine](#4-synchronization-pairs--engine)
-  - [Sync Configuration (`config/sync_pairs.json`)](#sync-configuration-configsync_pairsjson)
-  - [Configured Sync Pairs](#configured-sync-pairs)
+  - [Sync Configuration (`config/sync_configs.json`)](#sync-configuration-configsync_configsjson)
+  - [Configured Sync Configs](#configured-sync-configs)
   - [Delta Synchronization Algorithm](#delta-synchronization-algorithm)
 - [5. Complete Script & Component Reference](#5-complete-script--component-reference)
   - [Entry Points & CLI](#entry-points--cli)
@@ -50,15 +50,15 @@ The system follows a clean, decoupled multi-tiered architecture separating confi
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
 │                                   CONFIGURATION LAYER                                   │
 │   ┌─────────────────────────────────────────┐   ┌───────────────────────────────────┐   │
-│   │         config/directories.json         │   │        config/sync_pairs.json     │   │
-│   │           (Directory Configs)           │   │       (Sync Pair Definitions)     │   │
+│   │         config/directories.json         │   │        config/sync_configs.json   │   │
+│   │           (Directory Configs)           │   │  (Sync Config + Group Mappings)   │   │
 │   └────────────────────┬────────────────────┘   └────────────────────┬──────────────┘   │
 └────────────────────────┼──────────────────────────────────────────┼─────────────────────┘
                          │                                          │
                          ▼                                          ▼
 ┌─────────────────────────────────────────────┐   ┌───────────────────────────────────┐
 │              DATA ACCESS LAYER              │   │         DATA ACCESS LAYER         │
-│           EnvironmentRepository             │   │        SyncPairRepository         │
+│           EnvironmentRepository             │   │       SyncConfigRepository        │
 └────────────────────────┬────────────────────┘   └─────────────────┬─────────────────┘
                          │                                          │
                          ▼                                          │
@@ -91,7 +91,7 @@ The system follows a clean, decoupled multi-tiered architecture separating confi
 
 ### Design Patterns & Principles
 
-1. **Repository Pattern** ([`DirectoryRepository`](repositories/directory_repository.py), [`SyncPairRepository`](repositories/sync_pair_repository.py)): Decouples JSON configuration storage from in-memory domain objects.
+1. **Repository Pattern** ([`DirectoryRepository`](repositories/directory_repository.py), [`SyncConfigRepository`](repositories/sync_config_repository.py)): Decouples JSON configuration storage from in-memory domain objects.
 2. **Factory & Registry Pattern** ([`ServiceFactory`](services/service_factory.py)): Dynamically creates and caches directory connectors (`LDAPService` or `EntraIDService`) based on directory types and properties.
 3. **Engine & Strategy Pattern** ([`SyncEngine`](services/sync_engine.py), [`SyncService`](services/sync_service.py)): Decouples sync orchestration and configuration loop from directory-specific translation strategies (`AD_TO_AD`, `ENTRA_TO_AD`, `AD_TO_ENTRA`, `AD_TO_LDS`, `LDS_TO_AD`).
 4. **Zero-Hardcoded Secrets**: Credential management is delegated to HashiCorp Vault via [`VaultService`](services/vault_service.py).
@@ -296,63 +296,70 @@ The [`VaultService`](services/vault_service.py) class leverages the `hvac` Pytho
 
 ## 4. Synchronization Pairs & Engine
 
-### Sync Configuration (`config/sync_pairs.json`)
+### Sync Configuration (`config/sync_configs.json`)
 
-Group synchronization jobs are defined declaratively in [`config/sync_pairs.json`](config/sync_pairs.json):
+Group synchronization jobs are defined declaratively in [`config/sync_configs.json`](config/sync_configs.json). Each **sync config** sets its direction and source/target directory once, then lists one or more **group mappings** (source group → target group), each independently enabled/disabled — leaving `target_group` blank on a mapping defaults it to the same name as `source_group`:
 
 ```json
 [
   {
     "name": "Python Test Group Sync AD to AD",
-    "source_directory": "AD_DF2",
-    "source_group": "Python-Test-Group-1",
-    "target_directory": "AD_DF2",
-    "target_group": "Python-Test-Group-2",
     "direction": "AD_TO_AD",
-    "enabled": true
+    "source_directory": "AD_DF2",
+    "target_directory": "AD_DF2",
+    "enabled": true,
+    "mappings": [
+      { "source_group": "Python-Test-Group-1", "target_group": "Python-Test-Group-2", "enabled": true }
+    ]
   },
   {
     "name": "Python Test Group Sync Entra to AD",
-    "source_directory": "ENTRA_DF2",
-    "source_group": "Python-Test-Group-3",
-    "target_directory": "AD_DF2",
-    "target_group": "Python-Test-Group-4",
     "direction": "ENTRA_TO_AD",
-    "enabled": true
+    "source_directory": "ENTRA_DF2",
+    "target_directory": "AD_DF2",
+    "enabled": true,
+    "mappings": [
+      { "source_group": "Python-Test-Group-3", "target_group": "Python-Test-Group-4", "enabled": true }
+    ]
   },
   {
     "name": "Python Test Group Sync AD to Entra",
-    "source_directory": "ENTRA_DF2",
-    "source_group": "Python-Test-Group-4",
-    "target_directory": "AD_DF2",
-    "target_group": "Python-Test-Group-3",
     "direction": "AD_TO_ENTRA",
-    "enabled": false
+    "source_directory": "ENTRA_DF2",
+    "target_directory": "AD_DF2",
+    "enabled": false,
+    "mappings": [
+      { "source_group": "Python-Test-Group-4", "target_group": "Python-Test-Group-3", "enabled": true }
+    ]
   },
   {
     "name": "Python Test Group Sync AD to LDS",
-    "source_directory": "AD_DF2",
-    "source_group": "Python-Test-Group-5",
-    "target_directory": "LDS_TEST",
-    "target_group": "Other_Python-Test-Group-6",
     "direction": "AD_TO_LDS",
-    "enabled": true
+    "source_directory": "AD_DF2",
+    "target_directory": "LDS_TEST",
+    "enabled": true,
+    "mappings": [
+      { "source_group": "Python-Test-Group-5", "target_group": "Other_Python-Test-Group-6", "enabled": true }
+    ]
   },
   {
     "name": "Python Test Group Sync LDS to AD",
-    "source_directory": "LDS_TEST",
-    "source_group": "Other_Python-Test-Group-6",
-    "target_directory": "AD_DF2",
-    "target_group": "Python-Test-Group-5",
     "direction": "LDS_TO_AD",
-    "enabled": false
+    "source_directory": "LDS_TEST",
+    "target_directory": "AD_DF2",
+    "enabled": false,
+    "mappings": [
+      { "source_group": "Other_Python-Test-Group-6", "target_group": "Python-Test-Group-5", "enabled": true }
+    ]
   }
 ]
 ```
 
-### Configured Sync Pairs
+A config can hold several mappings sharing the same direction/directories — e.g. one "Marketing groups" config syncing `mkt-users`→`mkt-users`, `mkt-admins`→`mkt-admins`, and `mkt-leads`→`mkt-leads-eu` in one place, each toggleable on its own.
 
-| Pair Name | Direction | Source Group (Env) | Target Group (Env) | Status | Purpose |
+### Configured Sync Configs
+
+| Config Name | Direction | Source Group (Env) | Target Group (Env) | Status | Purpose |
 | :--- | :--- | :--- | :--- | :---: | :--- |
 | **Sync AD to AD** | `AD_TO_AD` | `Python-Test-Group-1` (`AD_DF2`) | `Python-Test-Group-2` (`AD_DF2`) | **Enabled** | Replicates on-prem AD security group membership to a second AD group. |
 | **Sync Entra to AD** | `ENTRA_TO_AD` | `Python-Test-Group-3` (`ENTRA_DF2`) | `Python-Test-Group-4` (`AD_DF2`) | **Enabled** | Pulls cloud Entra ID members, resolves them by UPN in on-prem AD, and populates the AD group. |
@@ -398,13 +405,14 @@ To maintain performance, avoid unnecessary directory writes, and minimize audit 
 Python-Challenge/
 ├── config/
 │   ├── directories.json               # Directory connection & auth profiles
-│   └── sync_pairs.json                # Group synchronization configurations
+│   └── sync_configs.json              # Group synchronization configs (with nested group mappings)
 ├── models/
 │   ├── directory.py                   # Directory dataclass model
-│   └── sync_pair.py                   # SyncPair dataclass model
+│   ├── sync_pair.py                   # SyncPair dataclass model (single runnable mapping)
+│   └── sync_config.py                 # SyncConfig / GroupMapping dataclass models
 ├── repositories/
 │   ├── directory_repository.py        # Repository for directory profiles
-│   └── sync_pair_repository.py        # Repository for sync pair configurations
+│   └── sync_config_repository.py      # Repository for sync config configurations
 ├── services/
 │   ├── entraid_service.py             # Microsoft Entra ID / Graph API connector
 │   ├── ldap_service.py                # On-prem AD & LDS LDAPS connector
@@ -447,7 +455,7 @@ Interactive command-line management console providing administrators and develop
 - **Option 0 (Exit)**: Gracefully terminates the application.
 
 #### [`main1.py`](main1.py)
-Automated batch execution script suitable for scheduled tasks or cron jobs. It loads all enabled sync pairs from `config/sync_pairs.json` via [`SyncEngine`](services/sync_engine.py) and runs synchronization non-interactively.
+Automated batch execution script suitable for scheduled tasks or cron jobs. It loads all enabled sync configs from `config/sync_configs.json` via [`SyncEngine`](services/sync_engine.py), expands each into its enabled group mappings, and runs synchronization non-interactively.
 
 ---
 
@@ -494,21 +502,22 @@ Core business logic implementing directory synchronization routines:
 - `sync_ad_to_lds(source_group, target_alias)`: AD $\rightarrow$ LDS group synchronization.
 
 #### [`services/sync_engine.py`](services/sync_engine.py)
-Batch synchronization coordinator. Iterates over enabled sync pairs from `SyncPairRepository` and routes them to the appropriate `SyncService` synchronization method.
+Batch synchronization coordinator. Iterates over enabled sync configs from `SyncConfigRepository`, expands each into a runnable `SyncPair` per enabled group mapping (via `models.sync_config.expand_to_pairs`), and routes each pair to the appropriate `SyncService` synchronization method.
 
 ---
 
 ### Domain Models (`models/`)
 
 - [`models/directory.py`](models/directory.py): Data class encapsulating directory connection settings (`host`, `port`, `use_ssl`, `search_base`, `group_filter_attribute`, `member_attribute`, `tenant_id`, `client_id`, `authority`, `secret_name`, etc.).
-- [`models/sync_pair.py`](models/sync_pair.py): Data class defining a synchronization relationship (`name`, `source_directory`, `source_group`, `target_directory`, `target_group`, `direction`, `enabled`).
+- [`models/sync_pair.py`](models/sync_pair.py): Data class defining a single runnable synchronization relationship (`name`, `source_directory`, `source_group`, `target_directory`, `target_group`, `direction`, `enabled`). Used internally by the engine — every enabled group mapping inside a `SyncConfig` is expanded into one of these at run time.
+- [`models/sync_config.py`](models/sync_config.py): `SyncConfig` (`name`, `direction`, `source_directory`, `target_directory`, `enabled`, `mappings`) groups one or more `GroupMapping` (`source_group`, `target_group`, `enabled`) entries that share the same direction and directories. `expand_to_pairs(config)` turns a config's enabled mappings into `SyncPair` instances.
 
 ---
 
 ### Data Access Repositories (`repositories/`)
 
 - [`repositories/directory_repository.py`](repositories/directory_repository.py): Reads `config/directories.json` and supplies `get_all()` and `get(name)` methods returning `Directory` instances.
-- [`repositories/sync_pair_repository.py`](repositories/sync_pair_repository.py): Reads `config/sync_pairs.json` and supplies `get_all()`, `get_enabled()`, and `get_by_name(name)` methods returning `SyncPair` instances.
+- [`repositories/sync_config_repository.py`](repositories/sync_config_repository.py): Reads `config/sync_configs.json` and supplies `get_all()`, `get_enabled()`, and `get_by_name(name)` methods returning `SyncConfig` instances.
 
 ---
 
@@ -636,7 +645,7 @@ Select an option:
 ```
 
 #### Option B: Automated Batch Synchronization
-Run `main1.py` to trigger headless synchronization of all enabled pairs configured in `config/sync_pairs.json`:
+Run `main1.py` to trigger headless synchronization of all enabled group mappings configured in `config/sync_configs.json`:
 ```bash
 python main1.py
 ```

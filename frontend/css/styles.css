@@ -35,6 +35,7 @@
 
 /* ── Reset & Base ──────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
 
 html, body {
   height: 100%;
@@ -358,6 +359,10 @@ tbody tr:last-child td { border-bottom: none; }
   box-shadow: 0 24px 64px rgba(0,0,0,0.5);
 }
 
+.modal.modal-lg { width: 780px; }
+
+.modal-footer-spacer { flex: 1; }
+
 @keyframes modal-in {
   from { opacity: 0; transform: translateY(-16px) scale(0.97); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -514,6 +519,155 @@ input[type="checkbox"] { display: none; }
 .toast-info    { border-color: rgba(88,166,255,0.4); }
 .toast-info    .toast-icon { color: var(--accent-blue); }
 
+/* ── Sync Config cards ─────────────────────────────────────────────────────── */
+.config-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.config-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+.config-card:hover { border-color: var(--text-muted); }
+
+.config-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px;
+  flex-wrap: wrap;
+}
+
+.config-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.config-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.config-card-route {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+}
+
+.config-card-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.config-card-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.config-card-body {
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+}
+
+.mapping-summary-row {
+  display: grid;
+  grid-template-columns: 1fr 24px 1fr 90px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.mapping-summary-row:last-child { border-bottom: none; }
+.mapping-summary-row.mapping-row-disabled { opacity: 0.45; }
+
+.mapping-summary-group {
+  font-family: 'Courier New', monospace;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mapping-summary-arrow { color: var(--text-muted); text-align: center; }
+
+/* ── Mapping editor (inside config modal) ────────────────────────────────── */
+.mapping-editor {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.mapping-editor-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr 60px 32px;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.mapping-editor-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 60px 32px;
+  gap: 8px;
+  padding: 8px 10px;
+  align-items: center;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.mapping-editor-row .form-input { font-size: 12px; padding: 6px 10px; }
+
+.mapping-row-toggle { display: flex; justify-content: center; }
+
+.mapping-row-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 15px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all var(--transition);
+}
+.mapping-row-remove:hover { color: var(--accent-red); background: var(--red-dim); }
+
+.mapping-editor-add {
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--accent-blue);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.mapping-editor-add:hover { background: var(--blue-dim); }
+
 /* ── Empty state ───────────────────────────────────────────────────────────── */
 .empty-state {
   text-align: center;
@@ -558,6 +712,10 @@ input[type="checkbox"].row-check {
   .form-grid { grid-template-columns: 1fr; }
   .form-grid .span-2 { grid-column: span 1; }
   .section-divider { grid-column: span 1; }
+  .modal.modal-lg { width: 95vw; }
+  .mapping-editor-head { display: none; }
+  .mapping-editor-row { grid-template-columns: 1fr 1fr 44px 28px; }
+  .mapping-summary-row { grid-template-columns: 1fr 18px 1fr 70px; }
 }
 
 /* ── Header User ─────────────────────────────────────────────────────────── */

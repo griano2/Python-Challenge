@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Group Sync Manager</title>
-  <meta name="description" content="Web interface for managing LDAP, Active Directory, and Entra ID group synchronization pairs.">
+  <meta name="description" content="Web interface for managing LDAP, Active Directory, and Entra ID group synchronization configs.">
   <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <!-- ── Mandatory Login Screen ────────────────────────────────────────── -->
@@ -54,9 +54,9 @@
     <!-- Sidebar -->
     <nav class="sidebar">
       <div class="sidebar-section-label">Main</div>
-      <div class="nav-item active" data-section="pairs">
+      <div class="nav-item active" data-section="configs">
         <span class="nav-icon">🔀</span>
-        <span>Sync Pairs</span>
+        <span>Sync Configs</span>
       </div>
       <div class="nav-item" data-section="directories">
         <span class="nav-icon">🌐</span>
@@ -67,37 +67,21 @@
     <!-- Content -->
     <main class="content">
 
-      <!-- ══ Sync Pairs Section ════════════════════════════════════════════ -->
-      <section class="section active" id="section-pairs">
+      <!-- ══ Sync Configs Section ═══════════════════════════════════════════ -->
+      <section class="section active" id="section-configs">
         <div class="page-header">
           <div class="page-title">
-            Sync Pairs
-            <small>Manage and run synchronization pairs</small>
+            Sync Configs
+            <small>Group multiple source → target group mappings under one config</small>
           </div>
           <div class="page-actions">
-            <button class="btn btn-success" onclick="runSelectedPairs()">▶ Run selected</button>
-            <button class="btn btn-secondary" onclick="runAllEnabled()">⚡ Run all</button>
-            <button class="btn btn-primary" onclick="openNewPairModal()">+ New pair</button>
+            <button class="btn btn-secondary" onclick="runAllEnabledConfigs()">⚡ Run all enabled</button>
+            <button class="btn btn-primary" onclick="openNewConfigModal()">+ New config</button>
           </div>
         </div>
 
-        <div class="table-wrapper">
-          <table id="sync-pairs-table">
-            <thead>
-              <tr>
-                <th style="width:36px"><input type="checkbox" class="row-check" id="select-all-pairs" onchange="document.querySelectorAll('.row-check:not(#select-all-pairs)').forEach(cb=>cb.checked=this.checked)"></th>
-                <th>Name</th>
-                <th>Source</th>
-                <th>Direction</th>
-                <th>Target</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="7"><div class="empty-state"><div class="spinner"></div></div></td></tr>
-            </tbody>
-          </table>
+        <div id="sync-configs-list" class="config-list">
+          <div class="empty-state"><div class="spinner"></div></div>
         </div>
       </section>
 
@@ -135,17 +119,19 @@
   </div>
 </div>
 
-<!-- ══ Sync Pair Modal ══════════════════════════════════════════════════════ -->
-<div class="modal-overlay" id="pair-modal">
-  <div class="modal">
+<!-- ══ Sync Config Modal ════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="config-modal">
+  <div class="modal modal-lg">
     <div class="modal-header">
-      <span class="modal-title" id="pair-modal-title">Sync Pair</span>
-      <button class="modal-close" onclick="closePairModal()">×</button>
+      <span class="modal-title" id="config-modal-title">Sync Config</span>
+      <button class="modal-close" onclick="closeConfigModal()">×</button>
     </div>
-    <div class="modal-body" id="pair-modal-body"></div>
+    <div class="modal-body" id="config-modal-body"></div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closePairModal()">Cancel</button>
-      <button class="btn btn-primary" id="pair-modal-save">Save</button>
+      <button class="btn btn-danger" id="config-modal-delete" onclick="deleteConfigFromModal()" hidden>🗑 Delete entire config</button>
+      <div class="modal-footer-spacer"></div>
+      <button class="btn btn-secondary" onclick="closeConfigModal()">Cancel</button>
+      <button class="btn btn-primary" id="config-modal-save">Save</button>
     </div>
   </div>
 </div>
@@ -171,7 +157,7 @@
 <!-- ══ Scripts ══════════════════════════════════════════════════════════════ -->
 <script src="/static/js/api.js"></script>
 <script src="/static/js/directories.js"></script>
-<script src="/static/js/sync_pairs.js"></script>
+<script src="/static/js/sync_configs.js"></script>
 <script src="/static/js/app.js"></script>
 
 </body>
